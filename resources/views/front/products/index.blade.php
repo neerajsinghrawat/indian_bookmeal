@@ -207,14 +207,14 @@ $(document).ready(function() {
           
   });  
 
-  $(document).on('click','.attributes',function(){
+$(document).on('click','.attributes',function(){
     var totalAmount = $('.totalAmount').val();
     var totalPrice = parseFloat(0);
     var pricetype = $(this).attr('pricetype');
     var amount = $(this).attr('amount');
     var feature = $(this).attr('feature');
     var productAmount = $(this).attr('productAmount'); 
-    var totalMainamount= parseFloat(0);
+    var totalMainamount= parseFloat(productAmount);
     var isOtherAttr = 0;
     var qty = $('.qty').val();
          
@@ -227,19 +227,26 @@ $(document).ready(function() {
 
         if (otherfeature != feature) {
           if($(this).prop('checked')){
-            var otherAttrAmount = parseFloat(otheritemamount)
-            var otherAttrPriceType = otherpricetype;
+            if (otheritemamount != 0) {
 
+                var otherAttrAmount = parseFloat(otheritemamount)
+                var otherAttrPriceType = otherpricetype;
+                alert('pp'+otherAttrAmount);
 
-            if (otherAttrPriceType == 'Increment') {
-                totalMainamount += parseFloat(productAmount)+parseFloat(otherAttrAmount);
-            } else if (otherAttrPriceType == 'Decrement'){
-                totalMainamount += parseFloat(productAmount)-parseFloat(otherAttrAmount);                
+                if (otherAttrPriceType == 'Increment') {
+                    totalMainamount += parseFloat(otherAttrAmount);
+                } else if (otherAttrPriceType == 'Decrement'){
+                    totalMainamount -= parseFloat(otherAttrAmount);                
+                }
+
+                isOtherAttr = 1;
+
             }
+             alert(totalMainamount);
 
-            isOtherAttr = 1;
           }          
         }
+       
 
      });      
 
@@ -249,9 +256,9 @@ $(document).ready(function() {
 
      }
           if (pricetype == 'Increment') {
-              totalMainamount = parseFloat(totalMainamount)+parseFloat(amount);
+              totalMainamount += parseFloat(amount);
           } else if (pricetype == 'Decrement'){
-              totalMainamount = parseFloat(totalMainamount)-parseFloat(amount);
+              totalMainamount -= parseFloat(amount);
               
           }else{
               totalMainamount = parseFloat(totalMainamount);
@@ -263,12 +270,13 @@ $(document).ready(function() {
 
   }); 
 
-  $(document).on('click','.qty',function(){
+  $(document).on('change','.qty',function(){
     var productAmount = $(this).attr('amount');
     var totalPrice = parseFloat(0);
-    var totalMainamount= parseFloat(0);
+    var totalMainamount= parseFloat(productAmount);
     var isOtherAttr = 0;
     var qty = $(this).val();     
+
      
      $(".attributes").each(function() {
         var otherpricetype = $(this).attr('pricetype');
@@ -278,15 +286,17 @@ $(document).ready(function() {
 
         
           if($(this).prop('checked')){
-            var otherAttrAmount = parseFloat(otheritemamount)
+            var otherAttrAmount = parseFloat(otheritemamount);
             var otherAttrPriceType = otherpricetype;
 
+            //alert(otherAttrPriceType);
 
             if (otherAttrPriceType == 'Increment') {
-                totalMainamount += parseFloat(productAmount)+(parseFloat(otherAttrAmount)*qty);
+                totalMainamount += parseFloat(otherAttrAmount);
             } else if (otherAttrPriceType == 'Decrement'){
-                totalMainamount += parseFloat(productAmount)-(parseFloat(otherAttrAmount)*qty);                
+                totalMainamount -= parseFloat(otherAttrAmount);                
             }
+            //alert(totalMainamount);
 
             isOtherAttr = 1;
           }          
@@ -294,20 +304,23 @@ $(document).ready(function() {
 
      });      
 
+
      if (isOtherAttr == 0) {
 
        totalMainamount = parseFloat(productAmount)*qty;
 
+     }else{
+
+        totalMainamount = parseFloat(totalMainamount) *qty;
      }
           
 
-          //totalMainamount = parseFloat(totalMainamount) *qty;
+          
       
           $(".totalPrice").html(totalMainamount);
           $('.totalAmount').val(totalMainamount);
 
-  }); 
-
+  });  
 /*  $(document).on('change','.qty',function(){
     var qty = $(this).val();
     alert(qty);

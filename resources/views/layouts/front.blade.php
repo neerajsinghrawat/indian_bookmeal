@@ -369,61 +369,7 @@ p {
 <script type="text/javascript">
 $(document).ready(function(){
 
-  $(document).on('click','.front_attributes',function(){
-    var totalAmount = $('.totalAmount').val();
-    var totalPrice = parseFloat(0);
-    var pricetype = $(this).attr('pricetype');
-    var amount = $(this).attr('amount');
-    var feature = $(this).attr('feature');
-    var productAmount = $(this).attr('productAmount'); 
-    var otherAttrAmount = parseFloat(0);
-    var otherAttrPriceType = 'Increment';
-
-         
-     
-     $(".front_attributes").each(function() {
-        var otherpricetype = $(this).attr('pricetype');
-        var otheritemamount = $(this).attr('amount');
-        var otherfeature = $(this).attr('feature');
-
-        if (otherfeature != feature) {
-          if($(this).prop('checked')){
-            otherAttrAmount = parseFloat(otheritemamount)
-            otherAttrPriceType = otherpricetype;
-
-          }          
-        }
-
-     });
-
-      
-
-      
-
-     var totalMainamount= parseFloat(0);
-
-          if (pricetype == 'Increment') {
-              totalMainamount = parseFloat(productAmount)+parseFloat(amount);
-          } else if (pricetype == 'Decrement'){
-              totalMainamount = parseFloat(productAmount)-parseFloat(amount);
-              
-          }else{
-              totalMainamount = parseFloat(productAmount);
-          }
-
-          if (otherAttrPriceType == 'Increment') {
-              totalMainamount = parseFloat(totalMainamount)+parseFloat(otherAttrAmount);
-          } else if (otherAttrPriceType == 'Decrement'){
-              totalMainamount = parseFloat(totalMainamount)-parseFloat(otherAttrAmount);
-              
-          }else{
-              totalMainamount = parseFloat(totalMainamount);
-          }
-    
-          $(".totalPrice").html(totalMainamount);
-          $('.totalAmount').val(totalMainamount);
-
-  }); 
+  
     $('.saveTablereservation').click(function(){
    // alert('mnlksdfjio');
     var name= $('#name').val();
