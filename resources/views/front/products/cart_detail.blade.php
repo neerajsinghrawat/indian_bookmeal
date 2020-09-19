@@ -3,30 +3,6 @@
 @section('description', 'Cart')
 @section('keywords', 'food','Cart')
 @section('content')
-<style type="text/css">
-    .coupon_color{
-        background-color:yellowgreen !important;
-    } 
-    .coupon_text_color{
-        color:green !important;
-    }
-    .coupon_popup_size{
-        width: 1000px;
-        left: -93px;
-    }
-
-    .table-cart {
-        line-height: 1.25;
-        width: 100% ;
-    }    
-
-    .table-cart th, .table-cart td {
-        vertical-align: middle;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid #e0e0e0;
-    }
-    .apply_coupon{cursor:pointer;font-size: 13px;color: #ddae71; margin-right: 15px;}
-</style>
 <meta name="csrf-token" content="{{ csrf_token() }}" />   
 
     <!-- Content -->
@@ -306,7 +282,7 @@
       </div>
     </div>
 </div>
-@endsection
+
 <script type="text/javascript">
     var baseUrl = '{{ URL::to('/') }}';
 </script>
@@ -533,3 +509,4 @@ $(document).ready(function() {
   })
 });
 </script>
+@endsection

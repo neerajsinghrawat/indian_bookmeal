@@ -4,20 +4,7 @@
 @section('keywords', (!empty($categories->meta_keyword))? $categories->meta_keyword:'')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<style type="text/css">
-   .categoryPageSection {
-   display: flex;
-   flex-direction: column;
-   width:100%;
-   }
-   <?php if(!empty($subCatArr)){
-      foreach($subCatArr as $sub_cat){
-      ?>
-   .categoryPageSection > .sub_cat_list_<?php echo $sub_cat['id'] ?> {order: <?php echo $sub_cat['sort_number'] ?>; display: block; } 
-   <?php 
-      }
-      } ?>
-</style>
+
         <!-- Page Title -->
         <div class="page-title bg-light">
             <div class="container">
@@ -57,7 +44,7 @@
                         <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
                             <div class="menu-category-title">
                                 <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/400x330/'.$keyarr[1]):'none';  ?>" alt="category"></div>
-                                <h2 class="title">{{ (isset($keyarr[0]))?$keyarr[0]:'' }}</h2>
+                                <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
                             </div>
                             <div class="menu-category-content">
                               <?php 
@@ -119,9 +106,6 @@
         </div>
     </div>
 </div>
-
-
-@endsection
 
 <script src="{{ asset('js/admin/jquery.min2.1.3.js') }}"></script>
 
@@ -391,3 +375,5 @@ $(document).on('click','.attributes',function(){
   });
 });
 </script>
+@endsection
+

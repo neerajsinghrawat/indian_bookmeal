@@ -1,19 +1,4 @@
     <!-- Header -->
-
-    <style type="text/css">
-    .notificationaa{ border-radius: 30px;
-        position: absolute;
-        top: -11.2px;
-        top: -0.8rem;
-        right: 0;
-        background-color: #4aa36b;
-        color: #fff;
-        font-weight: 600;
-        font-size: 9.799px;
-        font-size: 0.7rem;
-        display: inline-block;
-        padding: 0.15rem 0.3rem 0.2rem 0.35rem;
-        line-height: 1; }</style>
     <header id="header" class="light">
 
         <div class="container">
@@ -26,48 +11,36 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-7">
                     <!-- Navigation -->
                     <nav class="module module-navigation left mr-4">
-                        <ul id="" class="nav nav-main">
-                            <li><a href="{{ url('/') }}">Home</a></li>
-                            <li><a href="{{ url('/about-us') }}">About</a></li>
-                            <li><a href="{{ URL::to('category/menu') }}">Menu</a></li>
+                        <ul id="nav-main" class="nav nav-main">
+                            <li class="lidesign"><a href="{{ url('/') }}">Home</a></li>
+                            <li class="lidesign"><a href="{{ url('/about-us') }}">About</a></li>
+                            <li class="lidesign"><a href="{{ URL::to('category/menu') }}">Menu</a></li>
                             
-                            <li><a href="{{ url('/contact-us') }}">Contact</a></li>
-                           
-                    
+                            <li class="lidesign"><a href="{{ url('/contact-us') }}">Contact</a></li>
+                        @if (Auth::guest())
+                            <li class="lidesign"><a href="{{ route('login') }}">Login</a></li>
+                            <li class="lidesign"><a href="{{ route('register') }}">Register</a></li>
+                        @else
+                            <li class="has-dropdown lidesign">
+                                <a href="#">My Account</a>
+                                <div class="dropdown-container">
+                                    <ul class="dropdown-mega">
+                                        <li><a href="<?php echo URL::to('/').'/dashboard'; ?>">Dashboard</a></li>
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout ({{ Auth::user()->username }})</a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                                    </ul>
+                                </div>
+                            </li>
+                        @endif                    
                         </ul>
                     </nav>
                     <div class="module left">
                         <a href="#odder" data-toggle="modal" class="btn btn-outline-secondary"><span>Book A Table</span></a>
                     </div>
                 </div>
-
-                <div class="col-md-2">
-
-                        @if (Auth::guest())
-                            <a class="module module-cart"  href="{{ route('login') }}" title="login"><span class="cart-icon"><i class="ti ti-power-off"></i></span></a>
-
-                           <a class="module module-cart"  href="{{ route('register') }}" title="register"><span class="cart-icon"><span class="cart-value"><i class="ti ti-user"></i></span></span></a>
-                        @else
-                        <nav class="module module-navigation left mr-4">
-                            <ul id="nav-main" class="nav nav-main">
-                            <li class="has-dropdown">
-                                <a href="#"><i class="ti ti-user"></i>({{ Auth::user()->username }})</a>
-                                <div class="dropdown-container">
-                                    <ul class="dropdown-mega">
-                                        <li><a href="<?php echo URL::to('/').'/dashboard'; ?>">Dashboard</a></li>
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
-                        @endif
-                </div>
-
                 <div class="col-md-2">
 
                         

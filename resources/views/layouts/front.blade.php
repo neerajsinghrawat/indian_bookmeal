@@ -24,84 +24,19 @@
 
 <!-- CSS Core -->
 <link rel="stylesheet" href="{{ asset('css/front/css/core.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/front/css/developement.css') }}" />
 
 <!-- CSS Theme -->
 <link id="theme" rel="stylesheet" href="{{ asset('css/front/css/theme-beige.css') }}" />
 
 </head>
-<style type="text/css">
-.table-cart {
-    line-height: 1.25;
-    width: 100% ;
-}    
 
-.table-cart th, .table-cart td {
-    vertical-align: middle;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
-}
-.bg-image > img {
-    display: block;
-}
-.booking-formss{
-    margin-bottom: 0px; 
-}
-.modal-product-details {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-right: 25px;
-    padding-left: 25px;
-}
-p {
-    margin-bottom: 0px;
-}
-.modal-header{
-    width: 500px;
-    height: 140px;
-}
-.bbg-image {
-    width: 500px;
-    height: 140px;
-}
-.modal-body{
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 14px;
-    padding-bottom: 14px;
-}
-</style>
     <body>
         <meta name="csrf-token" content="{{ csrf_token() }}" />  
         @include('partials._front_messages')
         
     <div id="body-wrapper" class="animsition">
-            <!--[if lt IE 8]>
-               <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-           <![endif]-->  
-
-            <!-- Loader Start -->
-           <!--  <div class="loader">
-                <div class="loader-inner">
-                    <h4>Cooking in progress..</h4>
-                    <div id="cooking">
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div id="area">
-                            <div id="sides">
-                                <div id="pan"></div>
-                                <div id="handle"></div>
-                            </div>
-                            <div id="pancake">
-                                <div id="pastry"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- Loader End -->
+            
 
             <!--  Header Start  -->
         @include('partials.header')

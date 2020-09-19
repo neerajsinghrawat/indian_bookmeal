@@ -4,29 +4,9 @@
 @section('keywords','Order')
 @section('content')
 
-<style type="text/css">
-    .stylishbox{
-        border: 1px solid #e0e0e0; 
-        padding: 15px 15px 45px 15px;
-        margin-bottom: 10px
-    }
-
-    .stylishbox2{
-        border: 1px solid #e0e0e0; 
-        padding: 15px 15px 15px 15px;
-        margin-top: 25px;
-    }
-    .Bb-color{
-            background: #e6e6e6;
-            margin: 0px;
-            padding: 12px 15px;
-            font-size: 18px;
-    }
-</style>
-
 <!-- Breadcrumb Start -->
 <div class="page-title bg-light">
-    <div class="bg-image bg-parallax"><img src="http://assets.suelo.pl/soup/img/photos/bg-desk.jpg" alt=""></div>
+    <div class="bg-image bg-parallax"><img src="{{asset('css/front/img/bg-desk.jpg')}}" alt=""></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-4">
@@ -249,69 +229,7 @@
     <div class="row" style="margin-bottom: 50px;"><div class="col-md-12 "><div class="col-sm-offset-3 col-sm-4 "></div></div></div>
     </div>
 </div>
-           
-
-<style>
-ol.progtrckr {
-    margin: 0;
-    padding: 0;
-    list-style-type none;
-}
-
-ol.progtrckr li {
-    display: inline-block;
-    text-align: center;
-    line-height: 3.5em;
-}
-
-ol.progtrckr[data-progtrckr-steps="2"] li { width: 49%; }
-ol.progtrckr[data-progtrckr-steps="3"] li { width: 33%; }
-ol.progtrckr[data-progtrckr-steps="4"] li { width: 24%; }
-ol.progtrckr[data-progtrckr-steps="5"] li { width: 19%; }
-ol.progtrckr[data-progtrckr-steps="6"] li { width: 16%; }
-ol.progtrckr[data-progtrckr-steps="7"] li { width: 14%; }
-ol.progtrckr[data-progtrckr-steps="8"] li { width: 12%; }
-ol.progtrckr[data-progtrckr-steps="9"] li { width: 11%; }
-
-ol.progtrckr li.progtrckr-done {
-    color: black;
-    border-bottom: 4px solid yellowgreen;
-}
-ol.progtrckr li.progtrckr-todo {
-    color: silver; 
-    border-bottom: 4px solid silver;
-}
-
-ol.progtrckr li:after {
-    content: "\00a0\00a0";
-}
-ol.progtrckr li:before {
-    position: relative;
-    bottom: -2.5em;
-    float: left;
-    left: 50%;
-    line-height: 1em;
-}
-ol.progtrckr li.progtrckr-done:before {
-    content: "\2713";
-    color: white;
-    background-color: yellowgreen;
-    height: 2.2em;
-    width: 2.2em;
-    line-height: 2.2em;
-    border: none;
-    border-radius: 2.2em;
-}
-ol.progtrckr li.progtrckr-todo:before {
-    content: "\039F";
-    color: silver;
-    background-color: white;
-    font-size: 2.2em;
-    bottom: -1.2em;
-}
-
-
-</style>
+    
 
         			
 @endsection

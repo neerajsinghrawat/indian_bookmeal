@@ -185,7 +185,7 @@
   </div>
 
   
-@endsection
+
 
 <script src="{{ asset('js/admin/jquery.min2.1.3.js') }}"></script>
 <script type="text/javascript">
@@ -213,4 +213,4 @@ $(document).ready(function(){
    });
 });
 </script> 
-
+@endsection
