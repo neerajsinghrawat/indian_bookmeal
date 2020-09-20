@@ -91,7 +91,7 @@ class LoginController extends Controller
       ]);
 
 
-         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'activated' => 1])) {
+         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
           if (Session::has('product_slug')) {
             

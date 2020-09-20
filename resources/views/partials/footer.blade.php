@@ -1,30 +1,33 @@
-<!-- Footer -->
+
 <footer id="footer" class="bg-dark dark">
 
     <div class="container">
         <!-- Footer 1st Row -->
         <div class="footer-first-row row">
-            <div class="col-lg-3 text-center">
-                <a href="index.html"><img src="{{ asset('image/setting/'.$setting->logo) }}" alt="logo"  class="mt-5 mb-5"></a>
+            <div class="col-lg-4 text-center">
+                <a href="{{ url('/') }}"><img src="{{ asset('image/setting/'.$setting->logo) }}" alt="logo"  class="mt-5 mb-5"></a>
             </div>
             <div class="col-lg-4 col-md-6">
-                <h5 class="text-muted">Latest news</h5>
+                <h5 class="text-muted">{{ $setting->site_title}}</h5>
                 <ul class="list-posts">
                     <li>
-                        <a href="blog-post.html" class="title">How to create effective webdeisign?</a>
-                        <span class="date">February 14, 2015</span>
+                        <span class="title">{{ $setting->address}}</span>
+                        <!-- <span class="date">February 14, 2015</span> -->
                     </li>
                     <li>
-                        <a href="blog-post.html" class="title">Awesome weekend in Polish mountains!</a>
-                        <span class="date">February 14, 2015</span>
+                        <h6 class="mb-1 text-muted">Phone</h6>
+                        <i class="ti ti-mobile"> {{ $setting->mobile }}</i><br>
+                        <i class="ti ti-mobile"> {{ $setting->phone }}</i> 
                     </li>
                     <li>
-                        <a href="blog-post.html" class="title">How to create effective webdeisign?</a>
-                        <span class="date">February 14, 2015</span>
+                       
+                        <h6 class="mb-1 text-muted">E-mail</h6>
+                        <a href="mailto:{{ $setting->email }}"><i class="ti ti-email"> {{ $setting->email }}</i></a><br>
+                        <a href="mailto:{{ $setting->email }}"><i class="ti ti-email"> {{ $setting->email2 }}</i></a>
                     </li>
                 </ul>
             </div>
-            <div class="col-lg-5 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <h5 class="text-muted">Subscribe Us!</h5>
                 <!-- MailChimp Form -->
                         <form action="{{ route('pages.create_newsletter.post') }}" method="POST" class="mb-5">
@@ -57,7 +60,7 @@
         </div>
         <!-- Footer 2nd Row -->
         <div class="footer-second-row">
-            <span class="text-muted">Copyright Soup 2020©. Made with love by Suelo.</span>
+            <span class="text-muted">Copyright {{ $setting->site_title}} {{date('Y')}}©.</span>
         </div>
     </div>
 
@@ -65,4 +68,4 @@
     <button id="back-to-top" class="back-to-top"><i class="ti ti-angle-up"></i></button>
 
 </footer>
-<!-- Footer / End -->
+<!-- Footer / End

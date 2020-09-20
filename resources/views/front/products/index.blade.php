@@ -75,8 +75,11 @@
 
 
                                         </div>
-                                        <div class="col-sm-6 text-sm-right">
-                                            <span class="text-md mr-4"><span class="text-muted">from</span> <?php echo getSiteCurrencyType(); ?><span data-product-base-price>{{ $food['price'] }}</span></span>
+                                          <div class="col-sm-2 text-sm-right">
+
+                                            <span class="text-md mr-4 left"><span class="text-muted">from</span> <?php echo getSiteCurrencyType(); ?><span data-product-base-price>{{ $food['price'] }}</span></span>
+                                          </div>
+                                        <div class="col-sm-4 text-sm-right">
                                             
                                             <!-- <button class="btn btn-outline-secondary btn-sm addToCart" product_id="{{ $food['id'] }}"><span>Add to cart</span></button> -->
                                             @if (Auth::guest())

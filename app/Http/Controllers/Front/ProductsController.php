@@ -382,7 +382,7 @@ class ProductsController extends Controller
           if(isset($product_details->image) && !empty($product_details->image)){
             $iImgPath = asset('image/product/400x330/'.$product_details->image);
           }
-            $html .='<form action="" id="AddToCART" class="booking-formss">'.csrf_field().'<div class="modal-header modal-header-lg dark bg-dark"><div class="bg-image" ><img src="http://assets.suelo.pl/soup/img/photos/modal-add.jpg" alt="" class="bbg-image"></div><h4 class="modal-title">Specify your dish</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button></div>';
+            $html .='<form action="" id="AddToCART" class="booking-formss">'.csrf_field().'<div class="modal-header modal-header-lg dark bg-dark"><div class="bg-image" ><img src="'.asset('css/front/img/modal-add.jpg').'" alt="" class="bbg-image"></div><h4 class="modal-title">Specify your dish</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button></div>';
 
             $html .='<div class="modal-product-details"><div class="row align-items-center"><div class="col-md-6"><h6 class="mb-0">'. ucwords($product_details->name) .'</h6><span class="text-muted">'. $product_details->description .'</span></div><div class="col-md-3"><input type="number"  name="quantity" value="1" size="2" min="1" id="input-quantity1" class="form-control qty" amount="'.$product_details->price.'"></div><div class="col-md-3 text-lg text-right">'. getSiteCurrencyType().'<span class="totalPrice">'.$product_details->price .'</span></div></div></div>
             <div class="modal-body panel-details-container">';
@@ -465,7 +465,7 @@ class ProductsController extends Controller
           if(isset($product_details->image) && !empty($product_details->image)){
             $iImgPath = asset('image/product/400x330/'.$product_details->image);
           }
-            $html .='<form action="" id="updateToCART" class="booking-formss">'.csrf_field().'<div class="modal-header modal-header-lg dark bg-dark"><div class="bg-image" ><img src="http://assets.suelo.pl/soup/img/photos/modal-add.jpg" alt="" class="bbg-image"></div><h4 class="modal-title">Specify your dish</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button></div>';
+            $html .='<form action="" id="updateToCART" class="booking-formss">'.csrf_field().'<div class="modal-header modal-header-lg dark bg-dark"><div class="bg-image" ><img src="'.asset('css/front/img/modal-add.jpg').'" alt="" class="bbg-image"></div><h4 class="modal-title">Specify your dish</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button></div>';
 
             $html .='<div class="modal-product-details"><div class="row align-items-center"><div class="col-md-6"><h6 class="mb-0">'. ucwords($product_details->name) .'</h6><span class="text-muted">'. $product_details->description .'</span></div><div class="col-md-3"><input type="number"  name="quantity" value="'.$product_cartdetails->qty.'" size="2" min="1" id="input-quantity1" class="form-control qty" amount="'.$product_details->price.'"></div><div class="col-md-3 text-lg text-right">'. getSiteCurrencyType().'<span class="totalPrice">'.(($product_details->price + $attributes['amount'])*$product_cartdetails->qty) .'</span></div></div></div>
             <div class="modal-body panel-details-container">';
@@ -666,13 +666,20 @@ class ProductsController extends Controller
           }else{
 
 
-            $html .='<table class="table-cart">
-                      <i class="ti ti-shopping-cart"></i>
-                      <p>Your cart is empty...</p>
-                    </table>';
+            $html .='<div class="cart-empty" style="display: block;">
+                    <i class="ti ti-shopping-cart"></i>
+                    <p>Your cart is empty...</p>
+                </div>';
 
           }
       }
+    }else{
+
+
+      $html .='<div class="cart-empty" style="display: block;">
+                    <i class="ti ti-shopping-cart"></i>
+                    <p>Your cart is empty...</p>
+                </div>';     
     }
 
         

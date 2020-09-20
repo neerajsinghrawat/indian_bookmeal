@@ -42,18 +42,6 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-
-                        
-                    @if (Auth::guest())
-                        <a href="{{ route('login') }}" class="module module-cart right">
-                            <span class="cart-icon">
-                                <i class="ti ti-shopping-cart"></i>
-                                <span class="notificationaa">0</span>
-                            </span>
-                            <span class="cart-value">{{getSiteCurrencyType()}}<span class="notification_amountrrt">
-                            0</span></span>
-                        </a>                    
-                    @else
                     <a href="#" class="module module-cart right productfrontcartdetail" data-toggle="panel-cart">
                         <span class="cart-icon">
                             <i class="ti ti-shopping-cart"></i>
@@ -62,7 +50,6 @@
                         <span class="cart-value">{{getSiteCurrencyType()}}<span class="notification_amount">
                         {{$cart_amount}}</span></span>
                     </a>
-                    @endif
                 </div>
                 
             </div>

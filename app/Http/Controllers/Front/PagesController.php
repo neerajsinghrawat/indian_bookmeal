@@ -34,6 +34,7 @@ class PagesController extends Controller
     public function getHome()
     {
        //echo '<pre>';print_r($_SERVER['REMOTE_ADDR']);die('dmnhk');
+        $productsArr = array();
 
         $getip = WebsiteVisitor::where('ip_address','=',$_SERVER['REMOTE_ADDR'])->count();
 
@@ -79,12 +80,24 @@ class PagesController extends Controller
         }
 
     	$sliders = Slider::where('status','=', 1)->get();
-    	$testimonials = Testimonial::where('status','=', 1)->where('show_inhome_page','=', 1)->get();
+    	$testimonials = Testimonial::where('status','=', 1)->where('show_inhome_page','=', 1)->limit(2)->get();
 
-    	$products = Product::where('status','=', 1)->where('is_popular','=', 1)->orderBy(DB::raw('RAND()'))->limit(10)->get();
+
+        $bestsellerproducts = Product::with('categorysub')->where('category_id','=', 7)->where('status','=', 1)->where('is_popular','=', 1)->get()->toArray();
+
+ 
+
+          foreach ($bestsellerproducts as $key => $value) {
+              $productsArr[$value['categorysub']['name'].'~'.$value['categorysub']['image']][] = $value ;
+          }  
+
+        //$testimonials = Testimonial::OrderBy('created_at','DESC')->paginate(10);
+
+
+        //echo '<pre>';print_r($productsArr);die;
     	//$setting = Setting::where('status','=', 1)->first();
  
-        return view('front.pages.home',["category_list" => $category_list,"sliders" => $sliders,"testimonials" => $testimonials,"products" => $products,"ourmenu_category_list" => $ourmenu_category_list,"ourmenu_category_list" => $ourmenu_category_list,"ourmenu_category_product" => $ourmenu_category_product]);
+        return view('front.pages.home',["category_list" => $category_list,"sliders" => $sliders,"testimonials" => $testimonials,"productsArr" => $productsArr,"ourmenu_category_list" => $ourmenu_category_list,"ourmenu_category_list" => $ourmenu_category_list,"ourmenu_category_product" => $ourmenu_category_product]);
  
     }
 

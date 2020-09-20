@@ -36,37 +36,51 @@
         <section class="section section-bg-edge">
 
             <div class="image right col-md-6 offset-md-6">
-                <div class="bg-image"><img src="http://assets.suelo.pl/soup/img/photos/bg-food.jpg" alt=""></div>
+                <div class="bg-image"><img src="{{asset('css/front/img/bg-food.jpg')}}" alt=""></div>
             </div>
 
             <div class="container">
                 <div class="col-lg-5 col-md-9">
-                    <div class="rate mb-5 rate-lg"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
                     <h1>The best food in London!</h1>
                     <p class="lead text-muted mb-5">Donec a eros metus. Vivamus volutpat leo dictum risus ullamcorper condimentum. Cras sollicitudin varius condimentum. Praesent a dolor sem....</p>
                     <div class="blockquotes">
                         <!-- Blockquote -->
-                        <blockquote class="blockquote light animated" data-animation="fadeInLeft">
-                            <div class="blockquote-content">
-                                <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
-                                <p>It’ was amazing feeling for my belly!</p>
-                            </div>
-                            <footer>
-                                <img src="http://assets.suelo.pl/soup/img/avatars/avatar02.jpg" alt="">
-                                <span class="name">Mark Johnson<span class="text-muted">, Google</span></span>
-                            </footer>
-                        </blockquote>
+                        <?php if (!empty($testimonials)) {
+                
+                            foreach ($testimonials as $key => $testimonial) {  
+                                if($key == 0){ ?>
+                        
+                            <blockquote class="blockquote light animated" data-animation="fadeInLeft">
+                                <div class="blockquote-content">
+                                    <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
+                                    <p class="fontSize"><?php echo $testimonial->description; ?></p>
+                                </div>
+                                <footer>
+                                    <span class="name"><?php echo $testimonial->name; ?><span class="text-muted">, <?php echo $testimonial->designation; ?></span></span>
+                                </footer>
+                            </blockquote>
+                        <?php }else{ ?>
                         <!-- Blockquote -->
-                        <blockquote class="blockquote animated" data-animation="fadeInRight" data-animation-delay="300">
-                            <div class="blockquote-content dark">
-                                <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
-                                <p>Great food and great atmosphere!</p>
-                            </div>
-                            <footer>
-                                <img src="http://assets.suelo.pl/soup/img/avatars/avatar01.jpg" alt="">
-                                <span class="name">Kate Hudson<span class="text-muted">, LinkedIn</span></span>
-                            </footer>
-                        </blockquote>
+                            <blockquote class="blockquote animated" data-animation="fadeInRight" data-animation-delay="300">
+                                <div class="blockquote-content dark">
+                                    <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
+                                    <p><?php echo $testimonial->description; ?></p>
+                                </div>
+                                <footer>
+                                    <span class="name"><?php echo $testimonial->name; ?><span class="text-muted">, <?php echo $testimonial->designation; ?></span></span>
+                                </footer>
+                            </blockquote>
+                        <?php } } }else{ ?>
+                            <blockquote class="blockquote light animated" data-animation="fadeInLeft">
+                                <div class="blockquote-content">
+                                    <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
+                                    <p>It’ was amazing feeling for my belly!</p>
+                                </div>
+                                <footer>
+                                    <span class="name">Mark Johnson<span class="text-muted">, Google</span></span>
+                                </footer>
+                            </blockquote>                        
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -74,44 +88,7 @@
         </section>
 
         <!-- Section - Steps -->
-        <section class="section section-extended right dark">
-
-            <div class="container bg-dark">
-                <div class="row">
-                    <div class="col-md-4">
-                        <!-- Step -->
-                        <div class="feature feature-1 mb-md-0">
-                            <div class="feature-icon icon icon-primary"><i class="ti ti-shopping-cart"></i></div>
-                            <div class="feature-content">
-                                <h4 class="mb-2"><a href="menu-list-collapse.html">Pick a dish</a></h4>
-                                <p class="text-muted mb-0">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <!-- Step -->
-                        <div class="feature feature-1 mb-md-0">
-                            <div class="feature-icon icon icon-primary"><i class="ti ti-wallet"></i></div>
-                            <div class="feature-content">
-                                <h4 class="mb-2">Make a payment</h4>
-                                <p class="text-muted mb-0">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <!-- Step -->
-                        <div class="feature feature-1 mb-md-0">
-                            <div class="feature-icon icon icon-primary"><i class="ti ti-package"></i></div>
-                            <div class="feature-content">
-                                <h4 class="mb-2">Recieve your food!</h4>
-                                <p class="text-muted mb-3">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </section>
+    
 
         <!-- Section - Menu -->
         <section class="section pb-0 protrude">
@@ -154,7 +131,7 @@
                 <div class="menu-sample">
                     <a href="{{ URL::to('category/menu') }}">
                         <img src="{{ asset('image/category/400x330/'.$ourmenu_category->image) }}" alt="" class="image">
-                        <h6 class="title">{{$ourmenu_category->name}}</h6>
+                        <h3 class="title frontTitle textright">{{strtolower($ourmenu_category->name)}}</h3>
                     </a>
                 </div>
                 <?php } } ?>
@@ -170,7 +147,7 @@
                 <div class="carousel" data-slick='{"dots": true}'>
                     <!-- Special Offer -->
                     <div class="special-offer">
-                        <img src="http://assets.suelo.pl/soup/img/photos/special-burger.jpg" alt="" class="special-offer-image">
+                        <img src="{{asset('css/front/img/special-burger.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
                             <h2 class="mb-2">Free Burger</h2>
                             <h5 class="text-muted mb-5">Get free burger from orders higher that $40!</h5>
@@ -183,7 +160,7 @@
                     </div>
                     <!-- Special Offer -->
                     <div class="special-offer">
-                        <img src="http://assets.suelo.pl/soup/img/photos/special-pizza.jpg" alt="" class="special-offer-image">
+                        <img src="{{asset('css/front/img/special-pizza.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
                             <h2 class="mb-2">Free Small Pizza</h2>
                             <h5 class="text-muted mb-5">Get free burger from orders higher that $40!</h5>
@@ -195,7 +172,7 @@
                     </div>
                     <!-- Special Offer -->
                     <div class="special-offer">
-                        <img src="http://assets.suelo.pl/soup/img/photos/special-dish.jpg" alt="" class="special-offer-image">
+                        <img src="{{asset('css/front/img/special-dish.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
                             <h2 class="mb-2">Chip Friday</h2>
                             <h5 class="text-muted mb-5">10% Off for all dishes!</h5>
@@ -211,24 +188,133 @@
 
         </section>
 
-        <!-- Section -->
-        <section class="section section-lg dark bg-dark">
+<section class="section bg-light">
 
-            <!-- BG Image -->
-            <div class="bg-image bg-parallax"><img src="http://assets.suelo.pl/soup/img/photos/bg-croissant.jpg" alt=""></div>
+            <div class="container">
+                <div class="row no-gutters justify-content-center">
+                    <div class="col-md-8" role="tablist">
+                        <h1 class="mb-6 text-center"><strong>Our</strong> Bestsellers</h1>
+                        <!-- Menu Category / Burgers -->
+                        <?php if (!empty($productsArr)) {
+                          foreach ($productsArr as $key => $product) {
+                          $keyarr=explode('~', $key);
+                          //echo '<pre>';print_r($keyarr);die; ?>
+                        <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
+                            <div class="menu-category-title">
+                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/400x330/'.$keyarr[1]):'none';  ?>" alt="category"></div>
+                                <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
+                            </div>
+                            <div class="menu-category-content">
+                              <?php 
+                                foreach ($product as $key => $food) {  
+                                           
+                               ?>
+                                <!-- Menu Item -->
+                                <div class="menu-item menu-list-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-sm-6 mb-2 mb-sm-0">
+                                            <h6 class="mb-0"><a href="#">{{ ucwords($food['name']) }}</a></h6>
+                                            <span class="text-muted text-sm">
+                                            <?php  $product_items = getProductitems($food['id']); ?>
+                                            <?php 
+                                              $i = 1;
+                                              if(isset($product_items) && count($product_items) > 0 ){
+                                              
+                                                foreach ($product_items as $key => $product_item) {
+                                                   $slashs = ($i < count($product_items)) ? ', ' : '';
+                                                   echo ucwords($product_item->title.$slashs);
+                                                   $i++; 
+                                                 } 
 
-            <div class="container text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="mb-3">Check our promo video!</h2>
-                        <h5 class="text-muted">Book a table even right now or make an online order!</h5>
-                        <button class="btn-play" data-toggle="video-modal" data-target="#modalVideo" data-video="https://www.youtube.com/embed/uVju5--RqtY"></button>
+                                               } ?>
+                                                </span>
+
+
+
+
+                                        </div>
+                                          <div class="col-sm-3 text-sm-right">
+
+                                            <span class="text-md mr-4 left"><span class="text-muted">from</span> <?php echo getSiteCurrencyType(); ?><span data-product-base-price>{{ $food['price'] }}</span></span>
+                                          </div>
+                                        <div class="col-sm-3 text-sm-right">
+                                            
+                                            <!-- <button class="btn btn-outline-secondary btn-sm addToCart" product_id="{{ $food['id'] }}"><span>Add to cart</span></button> -->
+                                            @if (Auth::guest())
+                                            <a href="{{ route('login') }}" class="btn btn-outline-secondary"><span>Add to cart</span></a>
+                                            @else
+                                            <a href="#productModal" data-toggle="modal" class="btn btn-outline-secondary productDetail" product_id="{{$food['id']}}"><span>Add to cart</span></a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                                
+                            </div>
+                        </div>
+                        <?php } }?>
+                    </div>
+                </div>
+            </div>
+
+        </section>       
+<section class="section section-extended dark">
+
+            <div class="container bg-dark marginLeft">
+                <div class="row positionLeft">
+                    <div class="col-md-4">
+                        <!-- Step -->
+                        <div class="feature feature-1 mb-md-0">
+                            <div class="feature-icon icon icon-primary"><i class="ti ti-shopping-cart"></i></div>
+                            <div class="feature-content">
+                                <h4 class="mb-2"><a href="menu-list-collapse.html">Pick a dish</a></h4>
+                                <p class="text-muted mb-0">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- Step -->
+                        <div class="feature feature-1 mb-md-0">
+                            <div class="feature-icon icon icon-primary"><i class="ti ti-wallet"></i></div>
+                            <div class="feature-content">
+                                <h4 class="mb-2">Make a payment</h4>
+                                <p class="text-muted mb-0">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- Step -->
+                        <div class="feature feature-1 mb-md-0">
+                            <div class="feature-icon icon icon-primary"><i class="ti ti-package"></i></div>
+                            <div class="feature-content">
+                                <h4 class="mb-2">Recieve your food!</h4>
+                                <p class="text-muted mb-3">Vivamus volutpat leo dictum risus ullamcorper condimentum.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </section>
 
+
+
+<section class="section section-lg dark bg-dark">
+
+            <!-- BG Image -->
+            <div class="bg-image bg-fixed"><img src="{{asset('css/front/img/bg-burger2.jpg')}}" alt=""></div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">                        
+                        <h1 class="display-2"><strong>Book a Table</strong></h1>
+                        <h4 class="text-muted mb-5">Book Your table online!</h4>
+                        <a href="#odder" data-toggle="modal" class="btn btn-outline-primary btn-lg"><span>Book a Table</span></a>
+                    </div>
+                </div>
+            </div>
+
+        </section>        
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

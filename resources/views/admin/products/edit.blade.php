@@ -280,7 +280,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="exampleInputPassword1">Popular</label>
+                  <label for="exampleInputPassword1">Bestsellers</label>
                    <input type="checkbox" name="is_popular" {{ ($products['is_popular'] == 1)?'checked':'unchecked' }}>
                 </div>
         

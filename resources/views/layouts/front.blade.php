@@ -94,7 +94,7 @@
     <nav id="panel-mobile">
         <div class="module module-logo bg-dark dark">
             <a href="#">
-                <img src="assets/img/logo-light.svg" alt="" width="88">
+                <img src="" alt="" width="88">
             </a>
             <button class="close" data-toggle="panel-mobile"><i class="ti ti-close"></i></button>
         </div>
@@ -162,7 +162,9 @@
                         <!-- Book a Table -->
                         <div class="utility-box">
                             <div class="utility-box-title bg-dark dark">
-                                <div class="bg-image"><img src="http://assets.suelo.pl/soup/img/photos/modal-review.jpg" alt=""></div>
+
+                                <div class="bg-image"><img src="{{asset('css/front/img/modal-review.jpg')}}" alt=""></div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button>
                                 <div class="row">
                                     <div class="col-md-1">
                                             <span class="icon icon-primary"><i class="ti ti-bookmark-alt"></i></span>
@@ -171,7 +173,9 @@
                                     <h4 class="mb-0">Book a table</h4>
                                     <p class="lead text-muted mb-0">Details about your reservation.</p>
                                 </div>
+
                                 </div>
+
                             </div> 
                             <div class="row">
                             <div class="col-sm-6 special-offer-content">
@@ -184,7 +188,7 @@
                                 ?>
                                 <div class="row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <h6 class="mb-1 text-muted">{{ $value->day_name }}</h6>
+                                        <h6 class="mb-1 text-muted">{{ ucfirst($value->day_name) }}</h6>
                                         
                                     </div>
                                     <div class="col-sm-6">
@@ -213,7 +217,7 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>People:</b></label>
+                                                    <label><b>People<span class="required">*</span></b></label>
                                                     <div class="select-container">
                                                     <select class="form-control" name="people_count" required>
                                                         <?php foreach ($people_count as $value) {  ?>
@@ -225,7 +229,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Date *:</b></label>
+                                                    <label><b>Date <span class="required">*</span></b></label>
                                                     <input type="date" name="reservation_date" class="form-control" id="date" required>
                                                 </div>
                                             </div>                                            
@@ -234,7 +238,7 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Time:</b></label>
+                                                    <label><b>Time<span class="required">*</span></b></label>
                                                     <div class="select-container">
                                                     <select name="reservation_time" class="form-control" required>
                                                         <?php foreach ($timearray as $value) {
@@ -247,17 +251,17 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Name *:</b></label>
+                                                    <label><b>Name <span class="required">*</span></b></label>
                                                     <input type="text" name="name" class="form-control" required id="name">
                                                 </div>
                                             </div>
                                         </div>
                                                 <div class="form-group">
-                                                    <label><b>Email *:</b></label>
+                                                    <label><b>Email <span class="required">*</span></b></label>
                                                     <input type="email" name="email" class="form-control" id="email" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><b>Phone Number *:</b></label>
+                                                    <label><b>Phone Number <span class="required">*</span></b></label>
                                                     <input type="text" id="phone" name="phone" class="form-control" required>
                                                 </div>
                                         <br>
@@ -341,7 +345,10 @@ $(document).ready(function(){
             }
           });
     }else{
-        alert('Please Fill all * fields');
+        //alert('Please Fill all * fields');
+
+                $('#dispmsg').html('Please fill all required fields').show();
+                setTimeout(function(){ jQuery("#dispmsg").hide(); }, 3000);
     }
   
   });

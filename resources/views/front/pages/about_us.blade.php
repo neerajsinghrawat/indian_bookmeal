@@ -20,7 +20,7 @@
         <section class="section section-bg-edge">
 
             <div class="image left bottom col-md-7">
-                <div class="bg-image"><img src="http://assets.suelo.pl/soup/img/photos/bg-chef.jpg" alt=""></div>
+                <div class="bg-image"><img src="{{asset('css/front/img/bg-chef.jpg')}}" alt=""></div>
             </div>
 
             <div class="container">
