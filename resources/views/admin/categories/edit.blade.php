@@ -84,6 +84,12 @@
                    
                 </div> 
                 <div class="form-group">
+                  <label for="exampleInputEmail1">Banner Image</label>
+                  <input type="file" class="form-control" name="bannerImage" value="{{ $categories['bannerImage'] }}"><br>
+                  <img class="img-thumbnail" src="{{ asset('image/category/200x200/'.$categories['bannerImage']) }}" alt="" style="width: 100px;height: 100px;">
+                   
+                </div> 
+                <div class="form-group">
                   <label for="exampleInputEmail1">Meta Title</label>
                   <input type="text" class="form-control" name="meta_title" placeholder="Enter Meta Title" value="{{ $categories['meta_title'] }}">
                 </div>

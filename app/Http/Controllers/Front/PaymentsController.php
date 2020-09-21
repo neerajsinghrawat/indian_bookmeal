@@ -11,6 +11,7 @@ use Session;
 use Redirect;
 
 use Stripe;
+use Exception; 
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
@@ -186,10 +187,11 @@ class PaymentsController extends Controller
                     "exp_year"  => $request->stripe['expire_year'],
                     "cvc"       => $request->stripe['cvv'],
                 )));
-            //echo "<pre>";print_r($generateToken);die;
+            
            } catch (Exception $e) {
               $payment_error = $e->getMessage();
               $card_error = 1;
+              //echo "<pre>";print_r($payment_error);die;
               
             }
                
@@ -258,7 +260,9 @@ class PaymentsController extends Controller
         }else{
           $results['result'] = 0;
           $results['error_msg'] = $payment_error;
-          $results['error_message'] = '<h1 class="payment_result">'.$this->query_model->getStaticTextTranslation('payment_failure').'</h1>'.'<p class="payment_result">'.$payment_error.'<br>'.$this->query_model->getStaticTextTranslation('press_go_back_button').'</p>';
+          $results['error_message'] = '<h1 class="payment_result">failed</h1>';
+          Session::flash('error',$results['error_msg']);
+          return Redirect::to('/shopping-cart');
         }
         
         if(!empty($payment_result)){
@@ -278,6 +282,8 @@ class PaymentsController extends Controller
           
         }else{
           $paymentResult = $payment_error;
+          Session::flash('error',$payment_error);
+          return Redirect::to('/shopping-cart');
         }
  
         if ($payment_status_code == 1) {

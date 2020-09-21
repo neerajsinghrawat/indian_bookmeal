@@ -66,8 +66,8 @@
         </div>
 
         <div class="module module-logo">
-            <a href="index.html">
-                <img src="assets/img/logo-horizontal-dark.svg" alt="">
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('image/setting/'.$setting->logo) }}" alt="">
             </a>
         </div>
 

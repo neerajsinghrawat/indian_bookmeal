@@ -88,7 +88,7 @@ class PagesController extends Controller
  
 
           foreach ($bestsellerproducts as $key => $value) {
-              $productsArr[$value['categorysub']['name'].'~'.$value['categorysub']['image']][] = $value ;
+              $productsArr[$value['categorysub']['name'].'~'.$value['categorysub']['bannerImage']][] = $value ;
           }  
 
         //$testimonials = Testimonial::OrderBy('created_at','DESC')->paginate(10);

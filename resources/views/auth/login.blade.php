@@ -8,7 +8,7 @@
             <!-- Video BG -->
 
             <!-- BG Video -->
-            <div class="bg-video dark-overlay" data-src="http://assets.suelo.pl/soup/video/video_3.mp4" data-type="video/mp4"></div>
+            <div class="bg-video dark-overlay" data-src="{{asset('public/css/front/img/video_3.mp4')}}" data-type="video/mp4"></div>
 
             <div class="container">
                 <div class="row justify-content-center">
@@ -16,7 +16,7 @@
                         <!-- Book a Table -->
                         <div class="utility-box">
                             <div class="utility-box-title bg-dark dark">
-                                <div class="bg-image"><img src="http://assets.suelo.pl/soup/img/photos/modal-review.jpg" alt=""></div>
+                                <div class="bg-image"><img src="{{asset('css/front/img/modal-review.jpg')}}" alt=""></div>
                                 <div>
                                     <span class="icon icon-primary"><i class="ti ti-bookmark-alt"></i></span>
                                     <h4 class="mb-0">Login</h4>

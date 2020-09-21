@@ -82,6 +82,15 @@
                     @endif
                 </div> 
                 <div class="form-group">
+                  <label for="exampleInputEmail1">Banner Image</label>
+                  <input type="file" class="form-control" name="bannerImage" >
+                   @if ($errors->has('image'))
+                    <span class="help-block">
+                        <strong>{{ $errors->first('bannerImage') }}</strong>
+                    </span>
+                    @endif
+                </div> 
+                <div class="form-group">
                   <label for="exampleInputEmail1">Meta Title</label>
                   <input type="text" class="form-control" name="meta_title" placeholder="Enter Meta Title">
                 </div>

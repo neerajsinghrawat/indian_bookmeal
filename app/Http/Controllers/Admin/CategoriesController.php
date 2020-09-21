@@ -109,7 +109,31 @@ class CategoriesController extends Controller
                 $source->toFile($fullPath);  
                 Image::make($destinationPath.'/'.$name)->resize(200, 200)->save(public_path('/image/category/200x200/'.$name));     
 
-                Image::make($destinationPath.'/'.$name)->resize(400, 330)->save(public_path('/image/category/400x330/'.$name));                      
+                //Image::make($destinationPath.'/'.$name)->resize(830, 170)->save(public_path('/image/category/830x170/'.$name));  
+                Image::make($destinationPath.'/'.$name)->resize(600, 450)->save(public_path('/image/category/480x420/'.$name));                     
+            }
+            } 
+            if (!empty($request->file('bannerImage'))) {
+            $image = $request->file('bannerImage');
+            $unq_id = uniqid();   
+      
+            $name = time().$unq_id.'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/image/category');
+            $image->move($destinationPath, $name);        
+            $category->bannerImage =  $name;
+               
+            $fullPath = public_path('image/category/'.$name);         
+                            
+            $tiny =  \Tinify\setKey('ios00qQ2g1v6pzNFcDkxqczLT6uDjBFN');
+
+            if(!empty($fullPath)){
+
+                $source = \Tinify\fromFile($fullPath);
+                $source->toFile($fullPath);  
+                Image::make($destinationPath.'/'.$name)->resize(200, 200)->save(public_path('/image/category/200x200/'.$name));     
+
+                Image::make($destinationPath.'/'.$name)->resize(830, 200)->save(public_path('/image/category/830x170/'.$name));  
+                //Image::make($destinationPath.'/'.$name)->resize(480, 420)->save(public_path('/image/category/480x420/'.$name));                     
             }
             }                
 		if($category->save()){
@@ -191,10 +215,35 @@ class CategoriesController extends Controller
                     $source = \Tinify\fromFile($fullPath);
                     $source->toFile($fullPath);
                     Image::make($destinationPath.'/'.$name)->resize(200, 200)->save(public_path('/image/category/200x200/'.$name));
-                    Image::make($destinationPath.'/'.$name)->resize(400, 330)->save(public_path('/image/category/400x330/'.$name));
+                   // Image::make($destinationPath.'/'.$name)->resize(830, 170)->save(public_path('/image/category/830x170/'.$name));  
+                    Image::make($destinationPath.'/'.$name)->resize(480, 420)->save(public_path('/image/category/480x420/'.$name)); 
                 }
 
         }	
+
+        if (!empty($request->file('bannerImage'))) {
+            $image = $request->file('bannerImage');
+            $unq_id = uniqid();   
+      
+            $name = time().$unq_id.'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/image/category');
+            $image->move($destinationPath, $name);        
+            $category->bannerImage =  $name;
+               
+            $fullPath = public_path('image/category/'.$name);         
+                            
+            $tiny =  \Tinify\setKey('ios00qQ2g1v6pzNFcDkxqczLT6uDjBFN');
+
+            if(!empty($fullPath)){
+
+                $source = \Tinify\fromFile($fullPath);
+                $source->toFile($fullPath);  
+                Image::make($destinationPath.'/'.$name)->resize(200, 200)->save(public_path('/image/category/200x200/'.$name));     
+
+                Image::make($destinationPath.'/'.$name)->resize(830, 200)->save(public_path('/image/category/830x170/'.$name));  
+                //Image::make($destinationPath.'/'.$name)->resize(480, 420)->save(public_path('/image/category/480x420/'.$name));                     
+            }
+        }
 		if($category->save()){
             Session::flash('success','Category Update successfully');
         }else{

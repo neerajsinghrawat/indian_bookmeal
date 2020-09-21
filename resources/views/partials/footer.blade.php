@@ -4,9 +4,10 @@
     <div class="container">
         <!-- Footer 1st Row -->
         <div class="footer-first-row row">
-            <div class="col-lg-4 text-center">
+            <div class="col-lg-3 text-center">
                 <a href="{{ url('/') }}"><img src="{{ asset('image/setting/'.$setting->logo) }}" alt="logo"  class="mt-5 mb-5"></a>
             </div>
+            <div class="col-lg-1 text-center"></div> 
             <div class="col-lg-4 col-md-6">
                 <h5 class="text-muted">{{ $setting->site_title}}</h5>
                 <ul class="list-posts">
@@ -16,14 +17,13 @@
                     </li>
                     <li>
                         <h6 class="mb-1 text-muted">Phone</h6>
-                        <i class="ti ti-mobile"> {{ $setting->mobile }}</i><br>
-                        <i class="ti ti-mobile"> {{ $setting->phone }}</i> 
+                        <i class="ti ti-mobile"> {{ $setting->mobile }}  <span> &nbsp; &nbsp;</span> {{ $setting->phone }}</i>
                     </li>
                     <li>
                        
                         <h6 class="mb-1 text-muted">E-mail</h6>
-                        <a href="mailto:{{ $setting->email }}"><i class="ti ti-email"> {{ $setting->email }}</i></a><br>
-                        <a href="mailto:{{ $setting->email }}"><i class="ti ti-email"> {{ $setting->email2 }}</i></a>
+                        <a href="mailto:{{ $setting->email }}">{{ $setting->email }}</a><br>
+                        <a href="mailto:{{ $setting->email }}">{{ $setting->email2 }}</a>
                     </li>
                 </ul>
             </div>

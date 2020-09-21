@@ -130,7 +130,7 @@
               }*/ ?>                
                 <div class="menu-sample">
                     <a href="{{ URL::to('category/menu') }}">
-                        <img src="{{ asset('image/category/400x330/'.$ourmenu_category->image) }}" alt="" class="image">
+                        <img src="{{ asset('image/category/480x420/'.$ourmenu_category->image) }}" alt="" class="image imgwidthHeight">
                         <h3 class="title frontTitle textright">{{strtolower($ourmenu_category->name)}}</h3>
                     </a>
                 </div>
@@ -201,7 +201,7 @@
                           //echo '<pre>';print_r($keyarr);die; ?>
                         <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
                             <div class="menu-category-title">
-                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/400x330/'.$keyarr[1]):'none';  ?>" alt="category"></div>
+                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/830x170/'.$keyarr[1]):'none';  ?>" alt="category"></div>
                                 <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
                             </div>
                             <div class="menu-category-content">
@@ -212,7 +212,7 @@
                                 <!-- Menu Item -->
                                 <div class="menu-item menu-list-item">
                                     <div class="row align-items-center">
-                                        <div class="col-sm-6 mb-2 mb-sm-0">
+                                        <div class="col-sm-7 mb-2 mb-sm-0">
                                             <h6 class="mb-0"><a href="#">{{ ucwords($food['name']) }}</a></h6>
                                             <span class="text-muted text-sm">
                                             <?php  $product_items = getProductitems($food['id']); ?>
@@ -233,7 +233,7 @@
 
 
                                         </div>
-                                          <div class="col-sm-3 text-sm-right">
+                                          <div class="col-sm-2 text-sm-right paddingRight">
 
                                             <span class="text-md mr-4 left"><span class="text-muted">from</span> <?php echo getSiteCurrencyType(); ?><span data-product-base-price>{{ $food['price'] }}</span></span>
                                           </div>
@@ -306,7 +306,7 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-6 offset-md-3">                        
+                    <div class="col-md-6 offset-md-3 text-center">                        
                         <h1 class="display-2"><strong>Book a Table</strong></h1>
                         <h4 class="text-muted mb-5">Book Your table online!</h4>
                         <a href="#odder" data-toggle="modal" class="btn btn-outline-primary btn-lg"><span>Book a Table</span></a>
@@ -314,8 +314,131 @@
                 </div>
             </div>
 
-        </section>        
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        </section>  
+
+ <div class="modal fade" id="productModal" role="dialog">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content" id="product_detail">
+        </div>
+    </div>
+</div>             
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><!-- 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+  var baseUrl = '{{ URL::to('/') }}';
+      
+  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+ // var form = $( "#addToCartForm" ).serialize();
+
+  $('.addToCart').click(function(){
+        
+        var productid = $(this).attr('product_id');     
+        //alert(productid);
+        
+            $.ajax({
+      
+                url: baseUrl+'/products/add_to_cart',
+                
+                type: 'post',
+                
+                data: {productid: productid,_token: CSRF_TOKEN},
+                
+                dataType: 'json',
+                
+                success: function(result) {
+
+                  /*alert(result.response);
+                  //$('#successFlashMsg').delay(1000).hide('highlight', {color: '#66cc66'}, 1500);*/
+                  
+                  $('<div id="successFlashMsg" class="msg msg-ok alert alert-success"><p>Item is successfully added into cart !</p></div>').prependTo('body');
+                  
+                  $('.display-cart').html(result.cart_count);
+                  
+                  //$('#totalProductInCart').html(result.totalProduct);
+                  
+                  //$('#totalAmountInCart').html(result.totalAmount);
+                  
+                  
+                  
+                  setTimeout(function(){
+                    $("#successFlashMsg").fadeOut('slow');
+                  },2000);
+                  
+                  
+                
+                }
+                
+              });
+          
+  });
+
+
+  $('.productDetail').click(function(){
+        
+        var productid = $(this).attr('product_id');     
+        //alert(productid);
+        
+            $.ajax({
+      
+                url: baseUrl+'/products/product_detail',
+                
+                type: 'post',
+                
+                data: {productid: productid,_token: CSRF_TOKEN},
+                
+                dataType: 'html',
+                
+                success: function(result) {
+
+                //console.log(result);
+                  
+                  $('#product_detail').html(result);
+                  
+                  
+                  
+                  
+                
+                }
+                
+              });
+          
+  });  
+
+  
+  $(document).on('click','.submitCart',function(){
+   
+        var baseUrl = '{{ URL::to('/') }}';
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+          $.ajax({
+            url : baseUrl+'/products/add_to_cart_new',
+            type : 'POST',
+            data : $('#AddToCART').serialize(),
+            dataType : 'json',
+            success : function(result){
+              
+            }
+          }).done(function(result){
+            
+                  if (result.response == 1) {
+                   $('<div id="successFlashMsg" class="msg msg-ok alert alert-success"><p>Item is successfully added into cart !</p></div>').prependTo('.msgcart');
+                  
+                    $('.notificationaa').html(result.cart_count);
+                    $('.notification_amount').html(result.cart_amount);
+                  }else {
+
+                    $('<div id="successFlashMsg" class="msg msg-ok alert alert-danger"><p>Item is not added into cart!</p></div>').prependTo('.msgcart');
+                  }    
+                  setTimeout(function(){
+                    $("#successFlashMsg").fadeOut('slow');
+                  },2000);
+
+          });    
+  
+  });
+});
+</script>
 @endsection

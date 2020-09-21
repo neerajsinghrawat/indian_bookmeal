@@ -54,7 +54,12 @@
                 </form>
                 <!--  Contact form End  -->
             </div> 
-            </div>                   
+            </div>   
+            
+            <div class="col-lg-6 col-md-6">
+                <br><br>
+                <iframe src="http://maps.google.com/maps?q={{ $setting->latitude}}, {{ $setting->longitude}}&z=15&output=embed" width="540" height="420" frameborder="0" style="border:0"></iframe>
+            </div>                
             <div class="col-lg-6 col-md-6 mb-5 mb-md-0">
                 <!-- <img src="assets/img/logo-horizontal-dark.svg" alt="" class="mb-5" width="130"> -->
                 <h4 class="mb-0">{{ $setting->site_title}}</h4>
@@ -85,10 +90,6 @@
                 <?php if(!empty($setting->youtube_link)){  ?> 
                     <a href="<?php echo $setting->youtube_link;?>" target="_blank" class="icon icon-social icon-circle icon-sm icon-youtube"><i class="fa fa-youtube"></i></a>
                 <?php } ?>
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <br><br>
-                <iframe src="http://maps.google.com/maps?q={{ $setting->latitude}}, {{ $setting->longitude}}&z=15&output=embed" width="540" height="420" frameborder="0" style="border:0"></iframe>
             </div>
         </div>
     </div>

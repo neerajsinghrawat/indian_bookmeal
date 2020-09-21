@@ -135,7 +135,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header modal-header-lg dark bg-dark">
-                <div class="bg-image"><img src="http://assets.suelo.pl/soup/img/photos/modal-covid.jpg" alt=""></div>
+                <div class="bg-image"><img src="{{asset('css/front/img/modal-covid.jpg')}}" alt=""></div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button>
             </div>
             <div class="modal-body">
@@ -148,8 +148,8 @@
 </div>
 
 <div class="modal fade product-modal" id="odder" role="dialog">
-    <div class="modal-dialog" role="document" style="
-    margin-right: 660px;
+    <div class="modal-dialog odder" role="document" style="/*
+    margin-right: 660px;*/
     margin-top: 100px;">
             <div class="container" style="
     width: 1119px;
@@ -203,7 +203,7 @@
                                 <?php } ?>
                                 <br>
                         <h4 class="mb-0"><b>Call Us Now</b></h4>
-                         <h6 class="mb-1 text-muted">{{ $setting->table_reservation_phone_number }}</h6>
+                         <h6 class="mb-1 text-muted"><i class="ti ti-mobile"> {{ $setting->table_reservation_phone_number }}</i></h6>
                                 
 
                                 </div>
@@ -217,7 +217,7 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>People<span class="required">*</span></b></label>
+                                                    <label><b>People<span class="required_2">*</span></b></label>
                                                     <div class="select-container">
                                                     <select class="form-control" name="people_count" required>
                                                         <?php foreach ($people_count as $value) {  ?>
@@ -229,8 +229,8 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Date <span class="required">*</span></b></label>
-                                                    <input type="date" name="reservation_date" class="form-control" id="date" required>
+                                                    <label><b>Date <span class="required_2">*</span></b></label>
+                                                    <input type="date" name="reservation_date" class="form-control required_3" id="date" required>
                                                 </div>
                                             </div>                                            
                                         </div>   
@@ -238,9 +238,9 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Time<span class="required">*</span></b></label>
+                                                    <label><b>Time<span class="required_2">*</span></b></label>
                                                     <div class="select-container">
-                                                    <select name="reservation_time" class="form-control" required>
+                                                    <select name="reservation_time" class="form-control required_3" required>
                                                         <?php foreach ($timearray as $value) {
                                                              ?>
                                                         <option value="{{$value}}">{{$value}} </option>
@@ -251,18 +251,18 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Name <span class="required">*</span></b></label>
-                                                    <input type="text" name="name" class="form-control" required id="name">
+                                                    <label><b>Name <span class="required_2">*</span></b></label>
+                                                    <input type="text" name="name" class="form-control required_3" required id="name">
                                                 </div>
                                             </div>
                                         </div>
                                                 <div class="form-group">
-                                                    <label><b>Email <span class="required">*</span></b></label>
-                                                    <input type="email" name="email" class="form-control" id="email" required>
+                                                    <label><b>Email <span class="required_2">*</span></b></label>
+                                                    <input type="email" name="email" class="form-control required_3" id="email" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><b>Phone Number <span class="required">*</span></b></label>
-                                                    <input type="text" id="phone" name="phone" class="form-control" required>
+                                                    <label><b>Phone Number <span class="required_2">*</span></b></label>
+                                                    <input type="text" id="phone" name="phone" class="form-control required_3" required>
                                                 </div>
                                         <br>
                                         <button class="utility-box-btn btn btn-secondary btn-block btn-lg saveTablereservation" type="button">Make reservation!</button>
@@ -308,7 +308,129 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-  
+
+$(document).on('click','.attributes',function(){
+    var totalAmount = $('.totalAmount').val();
+    var totalPrice = parseFloat(0);
+    var pricetype = $(this).attr('pricetype');
+    var amount = $(this).attr('amount');
+    var feature = $(this).attr('feature');
+    var productAmount = $(this).attr('productAmount'); 
+    var totalMainamount= parseFloat(productAmount);
+    var isOtherAttr = 0;
+    var qty = $('.qty').val();
+    var notEdit = $(this).attr('notEdit');
+         
+     
+     $(".attributes").each(function() {
+        var otherpricetype = $(this).attr('pricetype');
+        var otheritemamount = $(this).attr('amount');
+        var otherfeature = $(this).attr('feature');
+        
+
+        if (otherfeature != feature) {
+          if($(this).prop('checked')){
+            //alert(otherpricetype);
+            //alert(otheritemamount);
+            if (otheritemamount != 0) {
+
+                var otherAttrAmount = parseFloat(otheritemamount)
+                var otherAttrPriceType = otherpricetype;
+                //alert('pp'+otherAttrAmount);
+
+                if (otherAttrPriceType == 'Increment') {
+                    totalMainamount += parseFloat(otherAttrAmount);
+                } else if (otherAttrPriceType == 'Decrement'){
+                    totalMainamount -= parseFloat(otherAttrAmount);                
+                }
+
+                isOtherAttr = 1;
+
+            }
+             //alert(totalMainamount);
+
+          }          
+        }
+       
+
+     });      
+
+     if (isOtherAttr == 0) {
+
+       totalMainamount = parseFloat(productAmount);
+
+     }
+
+     //if (notEdit == 1) {
+          if (pricetype == 'Increment') {
+              totalMainamount += parseFloat(amount);
+          } else if (pricetype == 'Decrement'){
+              totalMainamount -= parseFloat(amount);
+              
+          }else{
+              totalMainamount = parseFloat(totalMainamount);
+          }      
+     //}
+//alert(totalMainamount);
+
+          totalMainamount = parseFloat(totalMainamount) *qty;
+          $(".totalPrice").html(totalMainamount);
+          $('.totalAmount').val(totalMainamount);
+
+  }); 
+
+  $(document).on('change','.qty',function(){
+    var productAmount = $(this).attr('amount');
+    var totalPrice = parseFloat(0);
+    var totalMainamount= parseFloat(productAmount);
+    var isOtherAttr = 0;
+    var qty = $(this).val();     
+
+     
+     $(".attributes").each(function() {
+        var otherpricetype = $(this).attr('pricetype');
+        var otheritemamount = $(this).attr('amount');
+        var otherfeature = $(this).attr('feature');
+        
+
+        
+          if($(this).prop('checked')){
+            var otherAttrAmount = parseFloat(otheritemamount);
+            var otherAttrPriceType = otherpricetype;
+
+            //alert(otherAttrPriceType);
+
+            if (otherAttrPriceType == 'Increment') {
+                totalMainamount += parseFloat(otherAttrAmount);
+            } else if (otherAttrPriceType == 'Decrement'){
+                totalMainamount -= parseFloat(otherAttrAmount);                
+            }
+            //alert(totalMainamount);
+
+            isOtherAttr = 1;
+          }          
+        
+
+     });      
+
+
+     if (isOtherAttr == 0) {
+
+       totalMainamount = parseFloat(productAmount)*qty;
+
+     }else{
+
+        totalMainamount = parseFloat(totalMainamount) *qty;
+     }
+          
+
+          
+      
+          $(".totalPrice").html(totalMainamount);
+          $('.totalAmount').val(totalMainamount);
+
+  }); 
+
     $('.saveTablereservation').click(function(){
    // alert('mnlksdfjio');
     var name= $('#name').val();
@@ -345,9 +467,30 @@ $(document).ready(function(){
             }
           });
     }else{
-        //alert('Please Fill all * fields');
 
                 $('#dispmsg').html('Please fill all required fields').show();
+                $(".required_3").each(function() {
+
+                    var dataFill = $(this).val();
+
+                    if (dataFill == '') {
+
+                        //alert(dataFill);
+                        $(this).css({'border-color':'red'});
+                        
+                    }else{
+
+                        $(this).css({'border-color':'#e0e0e0'});
+
+
+                    }
+
+
+
+                });
+
+                
+
                 setTimeout(function(){ jQuery("#dispmsg").hide(); }, 3000);
     }
   

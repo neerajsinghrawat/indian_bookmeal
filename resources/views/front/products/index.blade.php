@@ -30,7 +30,7 @@
                                 if (!empty($categories)) {
                                   //echo '<pre>';print_r($categories);die;
                                   foreach ($categories as $key => $category) { ?>
-                                <li><a href="#<?php echo $category['slug']; ?>"><?php echo $category['name']; ?></a></li>
+                                <li><a href="{{ URL::to('category/menu') }}#<?php echo $category['slug']; ?>"><?php echo $category['name']; ?></a></li>
                                 <?php } } ?>
                             </ul>
                         </nav>
@@ -43,7 +43,7 @@
                           //echo '<pre>';print_r($keyarr);die; ?>
                         <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
                             <div class="menu-category-title">
-                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/400x330/'.$keyarr[1]):'none';  ?>" alt="category"></div>
+                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/830x170/'.$keyarr[1]):'none';  ?>" alt="category"></div>
                                 <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
                             </div>
                             <div class="menu-category-content">
@@ -54,7 +54,7 @@
                                 <!-- Menu Item -->
                                 <div class="menu-item menu-list-item">
                                     <div class="row align-items-center">
-                                        <div class="col-sm-6 mb-2 mb-sm-0">
+                                        <div class="col-sm-7 mb-2 mb-sm-0">
                                             <h6 class="mb-0"><a href="#">{{ ucwords($food['name']) }}</a></h6>
                                             <span class="text-muted text-sm">
                                             <?php  $product_items = getProductitems($food['id']); ?>
@@ -75,11 +75,11 @@
 
 
                                         </div>
-                                          <div class="col-sm-2 text-sm-right">
+                                          <div class="col-sm-2 text-sm-right paddingRight">
 
                                             <span class="text-md mr-4 left"><span class="text-muted">from</span> <?php echo getSiteCurrencyType(); ?><span data-product-base-price>{{ $food['price'] }}</span></span>
                                           </div>
-                                        <div class="col-sm-4 text-sm-right">
+                                        <div class="col-sm-3 text-sm-right">
                                             
                                             <!-- <button class="btn btn-outline-secondary btn-sm addToCart" product_id="{{ $food['id'] }}"><span>Add to cart</span></button> -->
                                             @if (Auth::guest())
@@ -153,6 +153,8 @@ $(document).ready(function() {
                   setTimeout(function(){
                     $("#successFlashMsg").fadeOut('slow');
                   },2000);
+
+                  location.reload();
                   
                   
                 
@@ -193,121 +195,7 @@ $(document).ready(function() {
               });
           
   });  
-
-$(document).on('click','.attributes',function(){
-    var totalAmount = $('.totalAmount').val();
-    var totalPrice = parseFloat(0);
-    var pricetype = $(this).attr('pricetype');
-    var amount = $(this).attr('amount');
-    var feature = $(this).attr('feature');
-    var productAmount = $(this).attr('productAmount'); 
-    var totalMainamount= parseFloat(productAmount);
-    var isOtherAttr = 0;
-    var qty = $('.qty').val();
-         
-     
-     $(".attributes").each(function() {
-        var otherpricetype = $(this).attr('pricetype');
-        var otheritemamount = $(this).attr('amount');
-        var otherfeature = $(this).attr('feature');
-        
-
-        if (otherfeature != feature) {
-          if($(this).prop('checked')){
-            if (otheritemamount != 0) {
-
-                var otherAttrAmount = parseFloat(otheritemamount)
-                var otherAttrPriceType = otherpricetype;
-                alert('pp'+otherAttrAmount);
-
-                if (otherAttrPriceType == 'Increment') {
-                    totalMainamount += parseFloat(otherAttrAmount);
-                } else if (otherAttrPriceType == 'Decrement'){
-                    totalMainamount -= parseFloat(otherAttrAmount);                
-                }
-
-                isOtherAttr = 1;
-
-            }
-             alert(totalMainamount);
-
-          }          
-        }
-       
-
-     });      
-
-     if (isOtherAttr == 0) {
-
-       totalMainamount = parseFloat(productAmount);
-
-     }
-          if (pricetype == 'Increment') {
-              totalMainamount += parseFloat(amount);
-          } else if (pricetype == 'Decrement'){
-              totalMainamount -= parseFloat(amount);
-              
-          }else{
-              totalMainamount = parseFloat(totalMainamount);
-          }
-
-          totalMainamount = parseFloat(totalMainamount) *qty;
-          $(".totalPrice").html(totalMainamount);
-          $('.totalAmount').val(totalMainamount);
-
-  }); 
-
-  $(document).on('change','.qty',function(){
-    var productAmount = $(this).attr('amount');
-    var totalPrice = parseFloat(0);
-    var totalMainamount= parseFloat(productAmount);
-    var isOtherAttr = 0;
-    var qty = $(this).val();     
-
-     
-     $(".attributes").each(function() {
-        var otherpricetype = $(this).attr('pricetype');
-        var otheritemamount = $(this).attr('amount');
-        var otherfeature = $(this).attr('feature');
-        
-
-        
-          if($(this).prop('checked')){
-            var otherAttrAmount = parseFloat(otheritemamount);
-            var otherAttrPriceType = otherpricetype;
-
-            //alert(otherAttrPriceType);
-
-            if (otherAttrPriceType == 'Increment') {
-                totalMainamount += parseFloat(otherAttrAmount);
-            } else if (otherAttrPriceType == 'Decrement'){
-                totalMainamount -= parseFloat(otherAttrAmount);                
-            }
-            //alert(totalMainamount);
-
-            isOtherAttr = 1;
-          }          
-        
-
-     });      
-
-
-     if (isOtherAttr == 0) {
-
-       totalMainamount = parseFloat(productAmount)*qty;
-
-     }else{
-
-        totalMainamount = parseFloat(totalMainamount) *qty;
-     }
-          
-
-          
-      
-          $(".totalPrice").html(totalMainamount);
-          $('.totalAmount').val(totalMainamount);
-
-  });  
+ 
 /*  $(document).on('change','.qty',function(){
     var qty = $(this).val();
     alert(qty);
@@ -372,6 +260,7 @@ $(document).on('click','.attributes',function(){
                   setTimeout(function(){
                     $("#successFlashMsg").fadeOut('slow');
                   },2000);
+                  location.reload();
 
           });    
   
