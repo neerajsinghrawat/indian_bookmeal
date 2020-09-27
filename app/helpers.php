@@ -23,6 +23,28 @@ if (! function_exists('get_data')) {
         return $cart_count;
     }
 
+    function get_dayOff()
+    {	
+    	$dayoff = array();
+    	$dayarr = array('monday'=>1,'tuesday'=>2,'wednesday'=>3,'thursday'=>4,'friday'=>5,'saturday'=>6,'sunday'=>0);
+    	$settings = DB::table('settings')->first();
+    	$opening_times = DB::table('opening_times')->where('setting_id', $settings->id)->get();
+    	foreach ($opening_times as $key => $value) {
+
+    		if ($value->is_close == 1) {
+
+    			$dayoff[]= $dayarr[$value->day_name];
+
+    		}
+
+    		
+    	}
+    	$dayoffdata = implode(', ', $dayoff);
+    	//print_r($dayoffdata);die;
+
+        return $dayoffdata;
+    }
+
     function getAttributeName($attribute)
     {
     	
@@ -60,7 +82,7 @@ if (! function_exists('get_data')) {
 	    			}
 
 		    			//echo "<pre>";print_r(getAttributeName($product_feature_attributes->attribute));die;
-		    			$attribute_detail['name'] .= $name.' ';
+		    			$attribute_detail['name'] .= $name.' ,';
 
 	    			
 	    		}  		
@@ -71,6 +93,50 @@ if (! function_exists('get_data')) {
 
     	//echo "<pre>";print_r($attribute_detail);die;
         return $attribute_detail;
+    
+    }
+
+    function getOrderAttributeDetail($attribute)
+    {
+    	
+    	//$attributeArr = unserialize($attribute);
+    	$attribute_detail = array();
+    	$attribute_detail['amount'] = 0;
+    	$attribute_detail['name'] = '';
+    	$attribute_detailname = '';
+    	if (!empty($attribute)) {
+    		//echo '<pre>';print_r($attribute);die;
+	    		$product_feature_attributes = DB::table('order_attributes')->where('order_item_id', $attribute)->get();
+	    		//echo '<pre>';print_r($product_feature_attributes);die;
+	    		if (!empty($product_feature_attributes)) {
+	    			foreach ($product_feature_attributes as $key => $value) {
+	    				$attribute_detail['name'] .= $value->name.' ,';
+	    			}
+		    			
+
+	    			
+	    		}  		
+	    	    		
+	    	
+    	}
+
+
+    	//echo "<pre>";print_r($attribute_detail);die;
+        return $attribute_detail;
+    
+    }
+    function getCategoryProductCount($id)
+    {
+    	
+    	//$attributeArr = unserialize($attribute);
+    	$count = 0;
+    	if (!empty($id)) {
+    		
+	    	$productsCount = DB::table('products')->where('sub_category_id', $id)->count();	    	    		//echo '<pre>';print_r($productsCount);die;	
+	    	$count = $productsCount;
+    	}
+
+        return $count;
     
     }
 

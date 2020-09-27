@@ -20,10 +20,13 @@ use App\Models\TableReservation;
 use App\Models\OpeningTime;
 use App\Models\EmailTemplate;
 
+use App\Models\Postcode;
+
 
 use Session;
 use DB;
 
+use Illuminate\Support\Facades\Cookie;
 use Auth;
 use Redirect;
 
@@ -33,6 +36,8 @@ class PagesController extends Controller
   
     public function getHome()
     {
+        //echo Cookie::get('cart_set_id');die;
+        //print_r(Session::getId());die;
        //echo '<pre>';print_r($_SERVER['REMOTE_ADDR']);die('dmnhk');
         $productsArr = array();
 
@@ -411,5 +416,71 @@ class PagesController extends Controller
             }
         }   
     }         
+
+    public function add_timedropdown(Request $request)
+    {   
+        $timearray=array(); /*'12:00 AM','01:00 AM','02:00 AM','03:00 AM','04:00 AM','05:00 AM','06:00 AM','07:00 AM','08:00 AM','09:00 AM','10:00 AM','11:00 AM','12:00 PM','01:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM','06:00 PM','07:00 PM','08:00 PM','09:00 PM','10:00 PM','11:00 PM'*/
+        //echo '<pre>';print_r($timearray);die;
+        $dayarr = array(1=>'monday',2=>'tuesday',3=>'wednesday',4=>'thursday',5=>'friday',6=>'saturday',0=>'sunday');
+         $day = $dayarr[$request->day];
+        if($request->isMethod('post')) {  
+            $setting = OpeningTime::where('day_name','=', $day)->first();
+            $time1 = strtotime($setting->start_time);
+            $time2 = strtotime($setting->end_time);
+            $diff = $time2 - $time1;
+            $hours = date('H', $diff);
+
+            for ($i=0; $i <= $hours; $i++) { 
+                 $timearray[] =date('h:i A',strtotime($setting->start_time));
+
+                 $setting->start_time =date('H:i:s',strtotime('+1 hour',strtotime($setting->start_time)));
+            }
+            
+            //print_r($timearray);die;
+        }
+
+        echo json_encode($timearray); exit();
+
+
+    }
+
+/**
+ * search postcode
+ *
+ * @param \Illuminate\Http\Request  $request
+ *
+ * @return \Illuminate\Http\Response
+ */
+  public function check_postalcode(Request $request)
+  { 
+      if ($request->isMethod('post')) {  
+        //echo '<pre>';print_r(expression)      
+        $postcode_list = Postcode::where('post_code','=',$request->post_code)->where('status','=',1)->first();
+        $postcode = array();
+        if (!empty($postcode_list)) {          
+          $postcode['code_status'] = 1;
+          $postcode['postcode'] = $request->post_code;
+          if (Session::has('postcode')) {
+            Session::forget('postcode');
+          }
+          Session::put('postcode', $postcode);
+
+          Session::flash('success_h1','Postcode');
+          Session::flash('success','Food delivery able to your Postcode');          
+        }else {
+
+          $postcode['code_status'] = 0;
+          $postcode['postcode'] = $request->post_code;
+          if (Session::has('postcode')) {
+            Session::forget('postcode');
+          }
+          Session::put('postcode', $postcode);
+          Session::flash('error_h1','Postcode');
+          Session::flash('error','Food delivery not able to your Postcode');
+        }
+    }
+        return response()->json(['success'=> 1]);
+        die;
+  }
 
 }

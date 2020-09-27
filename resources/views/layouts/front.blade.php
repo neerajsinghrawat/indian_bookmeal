@@ -1,5 +1,6 @@
  <?php $model = new App\Models\Setting;
-       $setting = get_data($model); ?>
+       $setting = get_data($model);
+       $dayoff = get_dayOff(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,13 +23,17 @@
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Raleway:wght@100;200;400;500&display=swap" rel="stylesheet">
 
-<!-- CSS Core -->
-<link rel="stylesheet" href="{{ asset('css/front/css/core.css') }}" />
-<link rel="stylesheet" href="{{ asset('css/front/css/developement.css') }}" />
 
+<!-- CSS Core -->
+
+
+<link rel="stylesheet" href="{{ asset('css/front/css/core.css') }}" />
+
+<link rel="stylesheet" href="{{ asset('css/front/css/developement.css') }}" />
 <!-- CSS Theme -->
 <link id="theme" rel="stylesheet" href="{{ asset('css/front/css/theme-beige.css') }}" />
-
+<!-- <link rel="stylesheet" href="{{ asset('css/front/css/font-awesome.min.css') }}"> -->
+<link rel="stylesheet" href="{{ asset('css/front/css/bootstrap-datetimepicker.min.css') }}">
 </head>
 
     <body>
@@ -77,7 +82,7 @@
         <div class="panel-cart-container">
             <div class="panel-cart-title">
                 <h5 class="title">Your Cart</h5>
-                <button class="close" data-toggle="panel-cart"><i class="ti ti-close"></i></button>
+                <button class="close addressClose" data-toggle="panel-cart"><i class="ti ti-close"></i></button>
             </div>
             <div class="panel-cart-content cart-details product_front_cartdetail">
                 
@@ -87,7 +92,12 @@
                 </div> -->
             </div>
         </div>
+        
+        @if (Auth::guest())
+        <a href="{{ URL::to('login/shopping-cart') }}" class="panel-cart-action btn btn-secondary btn-block btn-lg"><span>Go to checkout</span></a>
+        @else
         <a href="{{ URL::to('shopping-cart') }}" class="panel-cart-action btn btn-secondary btn-block btn-lg"><span>Go to checkout</span></a>
+        @endif
     </div>
 
     <!-- Panel Mobile -->
@@ -131,7 +141,7 @@
 </div>
 
 <!-- Modal / COVID -->
-<div class="modal fade" id="covid-modal" role="dialog" data-timeout="1000" data-set-cookie="covid-modal">
+<!-- <div class="modal fade" id="covid-modal" role="dialog" data-timeout="1000" data-set-cookie="covid-modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header modal-header-lg dark bg-dark">
@@ -145,16 +155,76 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
+
+<!-- Modal / COVID -->
+<?php if(Session::has('postcode')){ ?>
+<div class="modal fade" id="postCode-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-lg dark bg-dark">
+                <div class="bg-image"><img src="{{asset('css/front/img/modal-covid.jpg')}}" alt=""></div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3>Check Food Delivery Available on Your Post Code!</h3>
+                               
+                                <form action="" id="checkPost-Code" class="checkPost-Code">
+                                    {{ csrf_field() }}
+                                    <div class="utility-box-content"><div id="dispmsg" style="color: red"><b></b></div><div id="dispmsgSuccess" style="color: green"><b></b></div>
+                                
+                                        <div class="form-group">
+                                            <input type="text" name="post_code" class="form-control" id="post_code" placeholder="Enter Post code">
+                                        </div>
+                                        <br>
+                                        <!-- <button class="utility-box-btn btn btn-secondary btn-block btn-lg saveTablereservation" type="button">Make reservation!</button> -->
+                                    </div>
+
+                                        <button class="btn btn-secondary checkPostCode" type="button"><span>Check</span></button>
+                                    
+                                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<?php }else{ ?>
+<div class="modal fade" id="postCode-modal" role="dialog" data-timeout="1000">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-lg dark bg-dark">
+                <div class="bg-image"><img src="{{asset('css/front/img/modal-covid.jpg')}}" alt=""></div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3>Check Food Delivery Available on Your Post Code!</h3>
+                               
+                                <form action="" id="checkPost-Code" class="checkPost-Code">
+                                    {{ csrf_field() }}
+                                    <div class="utility-box-content"><div id="dispmsg" style="color: red"><b></b></div><div id="dispmsgSuccess" style="color: green"><b></b></div>
+                                
+                                        <div class="form-group">
+                                            <input type="text" name="post_code" class="form-control" id="post_code" placeholder="Enter Post code">
+                                        </div>
+                                        <br>
+                                        <!-- <button class="utility-box-btn btn btn-secondary btn-block btn-lg saveTablereservation" type="button">Make reservation!</button> -->
+                                    </div>
+
+                                        <button class="btn btn-secondary checkPostCode" type="button"><span>Check</span></button>
+                                    
+                                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
 <div class="modal fade product-modal" id="odder" role="dialog">
     <div class="modal-dialog odder" role="document" style="/*
     margin-right: 660px;*/
     margin-top: 100px;">
-            <div class="container" style="
-    width: 1119px;
-    height: 1165px;
-">
+            <div class="container" style="width: 1119px;height: 1165px;">
                 <div class="row justify-content-center">
                     <div class="col-lg-10  modal-content" style="padding-left: 0px;
     padding-right: 0px;">
@@ -217,7 +287,7 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>People<span class="required_2">*</span></b></label>
+                                                    <label><b>People<span class="required_2">&#x2731;</span></b></label>
                                                     <div class="select-container">
                                                     <select class="form-control" name="people_count" required>
                                                         <?php foreach ($people_count as $value) {  ?>
@@ -229,8 +299,8 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Date <span class="required_2">*</span></b></label>
-                                                    <input type="date" name="reservation_date" class="form-control required_3" id="date" required>
+                                                    <label><b>Date <span class="required_2">&#x2731;</span></b></label>
+                                                    <input type="text" name="reservation_date" class="form-control required_3 datepicker" id="date" data-date-format="mm/dd/yyyy" required>
                                                 </div>
                                             </div>                                            
                                         </div>   
@@ -238,9 +308,9 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Time<span class="required_2">*</span></b></label>
+                                                    <label><b>Time<span class="required_2">&#x2731;</span></b></label>
                                                     <div class="select-container">
-                                                    <select name="reservation_time" class="form-control required_3" required>
+                                                    <select name="reservation_time" class="form-control required_3 timeArray" required>
                                                         <?php foreach ($timearray as $value) {
                                                              ?>
                                                         <option value="{{$value}}">{{$value}} </option>
@@ -251,17 +321,17 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label><b>Name <span class="required_2">*</span></b></label>
+                                                    <label><b>Name <span class="required_2">&#x2731;</span></b></label>
                                                     <input type="text" name="name" class="form-control required_3" required id="name">
                                                 </div>
                                             </div>
                                         </div>
                                                 <div class="form-group">
-                                                    <label><b>Email <span class="required_2">*</span></b></label>
+                                                    <label><b>Email <span class="required_2">&#x2731;</span></b></label>
                                                     <input type="email" name="email" class="form-control required_3" id="email" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><b>Phone Number <span class="required_2">*</span></b></label>
+                                                    <label><b>Phone Number <span class="required_2">&#x2731;</span></b></label>
                                                     <input type="text" id="phone" name="phone" class="form-control required_3" required>
                                                 </div>
                                         <br>
@@ -304,10 +374,30 @@
 		});
 	});
 </script>
+
+
 <script src="{{ asset('js/admin/jquery.min2.1.3.js') }}"></script>
+
+<script src="{{ asset('css/front/js/bootstrap-datetimepicker.js') }}"></script>
+
+
+
 <script type="text/javascript">
 $(document).ready(function(){
-
+var dayoff = [<?php echo $dayoff ?>];
+//alert(dayoff);
+$('.datepicker').datetimepicker({
+   //language:  'fr',
+    startDate : '-0d',
+   weekStart: 0,
+   todayBtn:  1,
+   autoclose: 1,
+   todayHighlight: 1,
+   startView: 2,
+   minView: 2,
+   forceParse: 0,
+   daysOfWeekDisabled: dayoff
+});
 
 $(document).on('click','.attributes',function(){
     var totalAmount = $('.totalAmount').val();
@@ -429,6 +519,49 @@ $(document).on('click','.attributes',function(){
           $(".totalPrice").html(totalMainamount);
           $('.totalAmount').val(totalMainamount);
 
+  });
+
+  var baseUrl = '{{ URL::to('/') }}';
+      
+  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content'); 
+
+  $(document).on('change','.datepicker',function(){
+
+    var date = $(this).val();
+    newyear = new Date(date);
+    day = newyear.getDay();
+    //alert(day);
+        $.ajax({
+  
+            url: baseUrl+'/add_timedropdown',
+            
+            type: 'post',
+            
+            data: {day: day,_token: CSRF_TOKEN},
+            
+            dataType: 'json',
+            
+            success: function(result) {
+
+              //alert(result.response);
+              console.log(result);
+              html ="";
+              $(".timeArray").html($("<option>").attr('value','').text(''));
+              $.each(result, function (i, elem) {
+                    html += "<option value="+elem+">"+elem+"</option>";
+                });
+              $(".timeArray").append(html);
+                                                
+              $("#overlay, #PleaseWait").hide();
+              
+              
+              
+              
+            
+            }
+            
+          });
+
   }); 
 
     $('.saveTablereservation').click(function(){
@@ -496,13 +629,44 @@ $(document).on('click','.attributes',function(){
   
   });
 
+
+    $('.checkPostCode').click(function(){
+       
+        var post_code= $('#post_code').val();
+        //alert(post_code);
+        if (post_code !='') {
+            var baseUrl = '{{ URL::to('/') }}';
+            var formData = $('#checkPost-Code').serialize();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+              $.ajax({
+                url : baseUrl+'/pages/check_postalcode',
+                type : 'POST',
+                data : $('#checkPost-Code').serialize(),
+                dataType : 'json',
+                success : function(result){
+                  
+                }
+              }).done(function(result){
+
+                window.location.reload();                    
+                
+              });
+        }else{
+
+            $('#dispmsg').html('Please fill post code').show();
+
+            setTimeout(function(){ jQuery("#dispmsg").hide(); }, 3000);
+        }
+      
+    });
+
   var baseUrl = '{{ URL::to('/') }}';
       
   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
   $(document).on('click','.delete_cart',function(){
     //$('.delete_cart').click(function(){
-        
-        var cartid = $(this).attr('cart_id'); 
+        if(confirm('Are you want to Delete item?')){
+            var cartid = $(this).attr('cart_id'); 
         
             $.ajax({
       
@@ -541,6 +705,8 @@ $(document).on('click','.attributes',function(){
                 }
                 
               });
+        }
+
           
   });
 

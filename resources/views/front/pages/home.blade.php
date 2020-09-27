@@ -50,7 +50,7 @@
                             foreach ($testimonials as $key => $testimonial) {  
                                 if($key == 0){ ?>
                         
-                            <blockquote class="blockquote light animated" data-animation="fadeInLeft">
+                            <blockquote class="blockquote light animated visible" data-animation="fadeInLeft">
                                 <div class="blockquote-content">
                                     <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
                                     <p class="fontSize"><?php echo $testimonial->description; ?></p>
@@ -61,7 +61,7 @@
                             </blockquote>
                         <?php }else{ ?>
                         <!-- Blockquote -->
-                            <blockquote class="blockquote animated" data-animation="fadeInRight" data-animation-delay="300">
+                            <blockquote class="blockquote animated visible" data-animation="fadeInRight" data-animation-delay="300">
                                 <div class="blockquote-content dark">
                                     <div class="rate rate-sm mb-3"><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star active"></i><i class="fa fa-star"></i></div>
                                     <p><?php echo $testimonial->description; ?></p>
@@ -130,8 +130,8 @@
               }*/ ?>                
                 <div class="menu-sample">
                     <a href="{{ URL::to('category/menu') }}">
-                        <img src="{{ asset('image/category/480x420/'.$ourmenu_category->image) }}" alt="" class="image imgwidthHeight">
-                        <h3 class="title frontTitle textright">{{strtolower($ourmenu_category->name)}}</h3>
+                        <img src="{{ asset('image/category/'.$ourmenu_category->image) }}" alt="" class="image imgwidthHeight">
+                        <h3 class="title frontTitle">{{strtolower($ourmenu_category->name)}}</h3>
                     </a>
                 </div>
                 <?php } } ?>
@@ -140,12 +140,12 @@
         </section>
 
         <!-- Section - Offers -->
-        <section class="section bg-light">
+        <!-- <section class="section bg-light">
 
             <div class="container">
                 <h1 class="text-center mb-6">Special offers</h1>
                 <div class="carousel" data-slick='{"dots": true}'>
-                    <!-- Special Offer -->
+                    
                     <div class="special-offer">
                         <img src="{{asset('css/front/img/special-burger.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
@@ -158,7 +158,6 @@
                             </ul>
                         </div>
                     </div>
-                    <!-- Special Offer -->
                     <div class="special-offer">
                         <img src="{{asset('css/front/img/special-pizza.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
@@ -170,7 +169,6 @@
                             </ul>
                         </div>
                     </div>
-                    <!-- Special Offer -->
                     <div class="special-offer">
                         <img src="{{asset('css/front/img/special-dish.jpg')}}" alt="" class="special-offer-image">
                         <div class="special-offer-content">
@@ -186,7 +184,7 @@
                 </div>
             </div>
 
-        </section>
+        </section> -->
 
 <section class="section bg-light">
 
@@ -201,7 +199,7 @@
                           //echo '<pre>';print_r($keyarr);die; ?>
                         <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
                             <div class="menu-category-title">
-                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/830x170/'.$keyarr[1]):'none';  ?>" alt="category"></div>
+                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/'.$keyarr[1]):'none';  ?>" alt="category"></div>
                                 <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
                             </div>
                             <div class="menu-category-content">
@@ -239,12 +237,9 @@
                                           </div>
                                         <div class="col-sm-3 text-sm-right">
                                             
-                                            <!-- <button class="btn btn-outline-secondary btn-sm addToCart" product_id="{{ $food['id'] }}"><span>Add to cart</span></button> -->
-                                            @if (Auth::guest())
-                                            <a href="{{ route('login') }}" class="btn btn-outline-secondary"><span>Add to cart</span></a>
-                                            @else
+                                           
                                             <a href="#productModal" data-toggle="modal" class="btn btn-outline-secondary productDetail" product_id="{{$food['id']}}"><span>Add to cart</span></a>
-                                            @endif
+                                            
                                         </div>
                                     </div>
                                 </div>

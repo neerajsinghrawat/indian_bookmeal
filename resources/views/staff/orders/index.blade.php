@@ -36,7 +36,8 @@
                   <th>Total</th>
                   <th>Date</th>
                   <th>Payment Status</th>
-                  <th colspan="2">Order Status</th>
+                  <th>Order Status</th>
+                  <th>Take</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -64,6 +65,7 @@
 					  <td><?php echo date('d/m/Y H:i A', strtotime($order->order['created_at'])); ?></td>
 					  <td><?php echo $order->order['payment_status']; ?></td>
             <td><small class="label bg-green"><?php echo $order->order['order_status']; ?></small></td>
+            <td><?php echo (!empty($order->take_order))?ucfirst($order->take_order):'Delivery'; ?></td>           
 					   
             
             <td>

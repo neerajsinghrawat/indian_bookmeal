@@ -51,7 +51,7 @@
           </address>
         </div>
 		
-		<div class="col-sm-4 invoice-col">
+		    <div class="col-sm-4 invoice-col">
           <strong>Delivery Address:</strong>
           <address>
             <?php echo ucwords($orderDetail->user->first_name .' '.$orderDetail->user->last_name); ?><br>
@@ -65,7 +65,8 @@
           <b>Order ID:</b> <?php echo $orderDetail->order_number; ?><br>
           <b>Payment Date:</b> <?php echo date('d/m/Y H:i', strtotime($orderDetail->created_at)); ?><br>
           <b>Order Status:</b> <?php echo $orderDetail->order_status; ?><br>
-          <b>Payment Status:</b> <?php echo $orderDetail->payment_status; ?><br>
+          <b>Payment Status:</b> <?php echo ($orderDetail->payment_status == 'cod')?'Cash on delivery':'Paid'; ?><br>
+          <b>Take:</b> <?php echo (!empty($orderDetail->take_order))?ucfirst($orderDetail->take_order):'Delivery'; ?><br>
         </div>
         <!-- /.col -->
       </div>
@@ -88,28 +89,28 @@
             </thead>
             <tbody>
 			
-			<?php 
-				if(!empty($orderDetail->order_items)){
-					$i = 1;
-					foreach($orderDetail->order_items as $order_item){ 
-					$attributes = getAttributeDetail($order_item->productFeatureItem_id) ; 
-					$iImgPath = asset('image/no_product_image.jpg');
-					  if(isset($order_item->image) && !empty($order_item->image)){
-						$iImgPath = asset('image/product/200x200/'.$order_item->image);
-					  }
-			?>
+      			<?php 
+      				if(!empty($orderDetail->order_items)){
+      					$i = 1;
+      					foreach($orderDetail->order_items as $order_item){ 
+      					$attributes = getOrderAttributeDetail($order_item->id);
+      					$iImgPath = asset('image/no_product_image.jpg');
+      					  if(isset($order_item->image) && !empty($order_item->image)){
+      						$iImgPath = asset('image/product/200x200/'.$order_item->image);
+      					  }
+      			?>
 
-<?php  $categoryname = getcategoryname_byproduct_id($order_item->product_id);  ?>	
-            <tr class="<?php echo (($order_item->is_pre_order == 1) && ($orderDetail->order_status == 'Order Confirmed')) ? 'background_color' : ''; ?>">
-              <td><?php echo $i; ?></td>
-              <td><?php echo $order_item->product_name ?></td>
-              <td>{{$attributes['name']}}</td>
-              
-              <td><?php echo getSiteCurrencyType(); ?><?php echo $order_item->amount ?></td>
-              <td> <?php echo $order_item->qty ?></td>
-              <td><?php echo getSiteCurrencyType(); ?><?php echo $order_item->total_amount ?></td>
-            </tr>
-			<?php $i++; } } ?>
+                  <?php  $categoryname = getcategoryname_byproduct_id($order_item->product_id);  ?>	
+                  <tr class="<?php echo (($order_item->is_pre_order == 1) && ($orderDetail->order_status == 'Order Confirmed')) ? 'background_color' : ''; ?>">
+                    <td><?php echo $i; ?></td>
+                    <td><?php echo $order_item->product_name ?></td>
+                    <td>{{$attributes['name']}}</td>
+                    
+                    <td><?php echo getSiteCurrencyType(); ?><?php echo $order_item->amount ?></td>
+                    <td> <?php echo $order_item->qty ?></td>
+                    <td><?php echo getSiteCurrencyType(); ?><?php echo $order_item->total_amount ?></td>
+                  </tr>
+      			<?php $i++; } } ?>
             
             </tbody>
           </table>
@@ -122,10 +123,10 @@
         <!-- accepted payments column -->
         <div class="col-xs-6">
           <p class="lead">Payment Methods:</p>
-          <img src="../../dist/img/credit/visa.png" alt="Visa">
-          <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
-          <img src="../../dist/img/credit/american-express.png" alt="American Express">
-          <img src="../../dist/img/credit/paypal2.png" alt="Paypal">
+          <img src="{{ asset('css/img/credit/visa.png') }}" alt="Visa">
+          <img src="{{ asset('css/img/credit/mastercard.png') }}" alt="Mastercard">
+          <img src="{{ asset('css/img/credit/american-express.png') }}" alt="American Express"><!-- 
+          <img src="{{ asset('css/img/credit/paypal2.png') }}" alt="Paypal"> -->
 
           <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
             Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg
@@ -170,7 +171,7 @@
               <tr>
                 <th></th>
                 <th>Shipping:</th>
-                <td><?php echo getSiteCurrencyType(); ?><?php echo $orderDetail->shippingamount ?></td>
+                <td><?php echo getSiteCurrencyType(); ?><?php echo (!empty($orderDetail->shippingamount))?$orderDetail->shippingamount:0; ?></td>
               </tr>              
               <tr>
                 <th></th>
@@ -196,95 +197,95 @@
         </div>
       </div> -->
 	  
-	  
-	   <div class="row">
-        <div class="col-xs-12">
-		
-			<ol class="progtrckr" data-progtrckr-steps="4">
-				<li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['confirmed']) ? 'done' : 'todo'; ?>">Order Confirmed <?php echo isset($orderDeliveryStatusArr['confirmed']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['confirmed']->updated_at)).')' : '';  ?></li><!--
-			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['assign_staff']) ? 'done' : 'todo'; ?>">Food Pack and Assign <?php echo isset($orderDeliveryStatusArr['assign_staff']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['assign_staff']->updated_at)).')' : '';  ?></li><!--
-			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? 'done' : 'todo'; ?>">Out For Delivery <?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['out_for_delivery']->updated_at)).')' : '';  ?></li><!--
-			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['delivered']) ? 'done' : 'todo'; ?>">Delivered <?php echo isset($orderDeliveryStatusArr['delivered']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['delivered']->updated_at)).')' : '';  ?></li>
-		</ol>
+	 <?php if($orderDetail->take_order == 'takeaway'){ }else{ ?>
+      <div class="row">
+          <div class="col-xs-12">
+      		
+      			<ol class="progtrckr" data-progtrckr-steps="4">
+      				<li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['confirmed']) ? 'done' : 'todo'; ?>">Order Confirmed <?php echo isset($orderDeliveryStatusArr['confirmed']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['confirmed']->updated_at)).')' : '';  ?></li><!--
+      			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['assign_staff']) ? 'done' : 'todo'; ?>">Food Pack and Assign <?php echo isset($orderDeliveryStatusArr['assign_staff']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['assign_staff']->updated_at)).')' : '';  ?></li><!--
+      			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? 'done' : 'todo'; ?>">Out For Delivery <?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['out_for_delivery']->updated_at)).')' : '';  ?></li><!--
+      			 --><li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['delivered']) ? 'done' : 'todo'; ?>">Delivered <?php echo isset($orderDeliveryStatusArr['delivered']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['delivered']->updated_at)).')' : '';  ?></li>
+      		  </ol>
 
-		</div>
-	</div>
-	<div class="clearfix"></div>
-	<?php 
-		if(isset($orderDeliveryStatusArr['assign_staff']) && !empty($orderDeliveryStatusArr['assign_staff'])){
-	?>
-	<div class="row">
+  		    </div>
+      </div>
+      <div class="clearfix"></div>
+    	<?php 
+    		if(isset($orderDeliveryStatusArr['assign_staff']) && !empty($orderDeliveryStatusArr['assign_staff'])){
+    	?>
+    	<div class="row">
+            <div class="col-xs-12">
+      				<div class="col-xs-4 col-xs-offset-3">
+      				
+      					<p class="text-muted well well-sm no-shadow" style="margin-top: 20px;">
+      					<?php if(!empty($deliveryUserDetailArr)){ ?>
+      						<span><strong>Name: </strong> <?php echo $deliveryUserDetailArr['name']; ?></span><br/>
+      						<span><strong>Email: </strong> <?php echo $deliveryUserDetailArr['email']; ?></span><br/>
+      						<span><strong>Phone: </strong> <?php echo isset($deliveryUserDetailArr['phone']) ? $deliveryUserDetailArr['phone'] : ''; ?></span><br/>
+      						<span><strong>Mobile: </strong> <?php echo isset($deliveryUserDetailArr['mobile']) ? $deliveryUserDetailArr['mobile'] : ''; ?></span>
+      						
+      					<?php } ?>
+      					</p>
+      				</div>
+    		    </div>
+    	</div>
+    	<?php  } ?>
+      <div class="row">
         <div class="col-xs-12">
-				<div class="col-xs-4 col-xs-offset-3">
-				
-					<p class="text-muted well well-sm no-shadow" style="margin-top: 20px;">
-					<?php if(!empty($deliveryUserDetailArr)){ ?>
-						<span><strong>Name: </strong> <?php echo $deliveryUserDetailArr['name']; ?></span><br/>
-						<span><strong>Email: </strong> <?php echo $deliveryUserDetailArr['email']; ?></span><br/>
-						<span><strong>Phone: </strong> <?php echo isset($deliveryUserDetailArr['phone']) ? $deliveryUserDetailArr['phone'] : ''; ?></span><br/>
-						<span><strong>Mobile: </strong> <?php echo isset($deliveryUserDetailArr['mobile']) ? $deliveryUserDetailArr['mobile'] : ''; ?></span>
-						
-					<?php } ?>
-					</p>
-				</div>
-		</div>
-	</div>
-	<?php  } ?>
-	   <div class="row">
-        <div class="col-xs-12">
-		
-			<h3>Assign Delivery Staff</h3>
-			</hr>
-			<form action="<?php echo url('/').'/admin/orders/update_delivery_satff' ?>" enctype="multipart/form-data" method="POST" >
-             {{ csrf_field() }}
-			 
-			 <div class="form-group">
-			 <div class="col-xs-6">
-                  <label for="exampleInputEmail1">Delivery Staff</label>
-                  <select class="form-control delivery_staff_id" name="staff_id" required>
-				  <option value="">-Select-</option>
-				  <option value="admin">Admin</option>
-					<?php 
-						if(!empty($staffs)){
-							foreach($staffs as $staff){
-					?>
-						<option value="<?php echo $staff->id; ?>"><?php echo $staff->first_name.' '.$staff->last_name; ?></option>
-					<?php			
-							}
-						}
-					?>
-				  </select>
-			</div>
 
-			<div class="col-xs-6 order_status"  style="display:none">			
-				  <label for="exampleInputEmail1">Order Status</label>
-				  <?php $orderStatusArr = array('assign_staff' => 'Food Pack and Assign', 'out_for_delivery'=>'Out For Delivery','delivered'=>'Delivered'); ?>
-				  <select class="form-control " name="order_status">
-					<option value="">- Select -</option>
-					<?php 
-						if(!empty($orderStatusArr)){
-							foreach($orderStatusArr as $key => $order_status){
-					?>
-						<option value="<?php echo $key.'~'.$order_status; ?>"><?php echo $order_status ?></option>
-					<?php 
-							}
-						}
-					?>
-				  </select>
-				  
-                </div> 
-                </div> 
-				
-			<div class="clearfix"></div>
-			 <input type="hidden" name="order_number" value="<?php echo $orderDetail->order_number; ?>">
-			 <div class="box-footer">
-			 <label for="exampleInputEmail1"></label>
-                <button type="submit" id="submitbutton" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-		
-		</div>
-	</div>
+      		<h3>Assign Delivery Staff</h3>
+      		</hr>
+      		<form action="<?php echo url('/').'/admin/orders/update_delivery_satff' ?>" enctype="multipart/form-data" method="POST" >
+                 {{ csrf_field() }}
+
+            <div class="form-group">
+            <div class="col-xs-6">
+              <label for="exampleInputEmail1">Delivery Staff</label>
+              <select class="form-control delivery_staff_id" name="staff_id" required>
+                <option value="">-Select-</option>
+                <option value="admin">Admin</option>
+              	<?php 
+              		if(!empty($staffs)){
+              			foreach($staffs as $staff){
+              	?>
+              		<option value="<?php echo $staff->id; ?>"><?php echo $staff->first_name.' '.$staff->last_name; ?></option>
+              	<?php			
+              			}
+              		}
+              	?>
+              </select>
+            </div>
+
+            <div class="col-xs-6 order_status"  style="display:none">			
+            	  <label for="exampleInputEmail1">Order Status</label>
+            	  <?php $orderStatusArr = array('assign_staff' => 'Food Pack and Assign', 'out_for_delivery'=>'Out For Delivery','delivered'=>'Delivered'); ?>
+            	  <select class="form-control " name="order_status">
+            			<option value="">- Select -</option>
+            			<?php 
+            				if(!empty($orderStatusArr)){
+            					foreach($orderStatusArr as $key => $order_status){
+            			?>
+            				<option value="<?php echo $key.'~'.$order_status; ?>"><?php echo $order_status ?></option>
+            			<?php 
+            					}
+            				}
+            			?>
+            	  </select>
+            	  
+            </div> 
+            </div> 
+
+            <div class="clearfix"></div>
+            <input type="hidden" name="order_number" value="<?php echo $orderDetail->order_number; ?>">
+            <div class="box-footer">
+             <label for="exampleInputEmail1"></label>
+                  <button type="submit" id="submitbutton" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  <?php } ?>
 	  
 	 
     </section>

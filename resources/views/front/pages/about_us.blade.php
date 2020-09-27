@@ -8,7 +8,7 @@
         <div class="page-title border-top">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-7 offset-lg-5">
+                    <div class="col-lg-7 offset-lg-3 text-center">
                         <h1 class="mb-0">About Us</h1>
                         <h4 class="text-muted mb-0">Some informations about our restaurant</h4>
                     </div>

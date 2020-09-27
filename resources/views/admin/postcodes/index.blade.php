@@ -29,8 +29,8 @@
                 <thead>
                 <tr>
                   <th>S.No.</th>
-                  <th>Post Code</th>
-                  <th>Franchise Name</th>
+                  <th>Post Code</th><!-- 
+                  <th>Franchise Name</th> -->
                   <th>Status</th>
                   <th>Created</th>
                   <th>Action</th>
@@ -48,8 +48,8 @@
 				 ?>
 					<tr>
 					  <td><?php echo $index; ?></td>
-            <td><?php echo $postcode['post_code']; ?></td>           
-            <td><?php echo ucwords($postcode->franchise['name']); ?></td>           
+            <td><?php echo $postcode['post_code']; ?></td>        <!--    
+            <td><?php echo ucwords($postcode->franchise['name']); ?></td>  -->          
 					  				  
 					  <td><?php echo ($postcode['status'] == 1) ? '<small class="label bg-green">Active</small>' : '<small class="label bg-red">Inactive</small>'; ?></td>
 					  <td><?php echo (date('d-m-Y',strtotime($postcode['created_at']))); ?></td>

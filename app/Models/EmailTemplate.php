@@ -33,6 +33,7 @@ class EmailTemplate extends Model
 
 
         $user_ordersummary ='';
+        $user_tablesummary ='';
         if (isset($extraContentArr) && !empty($extraContentArr)) {
 
             $user_ordersummary  = isset($extraContentArr['Ordersummary']) ? $extraContentArr['Ordersummary'] : '';

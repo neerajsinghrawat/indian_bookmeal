@@ -177,6 +177,13 @@
                   <label for="exampleInputEmail1">Table Reservation Ph no.</label>
                   <input type="text" class="form-control" name="table_reservation_phone_number" value="{{ $settings['table_reservation_phone_number'] }}" placeholder="Enter Table Reservation Ph no.">
                 </div> 
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Take Away</label>
+                  <input type="checkbox" name="is_takeaway" <?php echo ($settings['is_takeaway'] == 1)?"checked='checked'":'' ; ?>>
+                  <label for="exampleInputEmail1">Home Delivery</label>
+                  <input type="checkbox" name="is_delivery" <?php echo ($settings['is_delivery'] == 1)?"checked='checked'":'' ; ?>>
+                </div> 
         
                 
               </div>

@@ -33,6 +33,7 @@
                   <th>Total</th>
                   <th>Date</th>
                   <th>Payment Status</th>
+                  <th>Take</th>
                   <th>Order Status</th>
                   <th>Payment Mode</th>
                   <th>Action</th>
@@ -56,7 +57,8 @@
 					  <td><?php echo $order->user->email; ?></td>
 					  <td><?php echo getSiteCurrencyType(); ?><?php echo $order->total_amount; ?></td>
 					  <td><?php echo date('d/m/Y H:i A', strtotime($order->created_at)); ?></td>
-					  <td><?php echo $order->payment_status; ?></td>
+            <td><?php echo $order->payment_status; ?></td>
+					  <td><?php echo (!empty($order->take_order))?ucfirst($order->take_order):'Delivery'; ?></td>
             <td><small class="label bg-green"><?php echo $order->order_status; ?></small></td>            
 					  <td>{{($order->payment_mode == 'cod')?'Cash on delivery':'Paid'}}</td>					  
 					  <td><a href="{{ URL::to('admin/orders/'.$order->order_number) }}"><i class="fa fa-eye"></i></a>

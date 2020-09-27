@@ -5131,7 +5131,7 @@
                                   outClass: "fade-out-up-sm",
                                   inDuration: 800,
                                   outDuration: 800,
-                                  linkElement: 'a:not([target="_blank"]):not([href^="#"])',
+                                  linkElement: 'a:not([target="_blank"]):not([href^="#"]):not([data-handler="next"]):not([data-handler="prev"])',
                                   loading: !0,
                                   loadingParentElement: "body",
                                   loadingClass: "animsition-loading",

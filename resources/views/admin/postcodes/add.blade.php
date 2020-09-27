@@ -35,7 +35,7 @@
                   <input type="text" class="form-control" name="post_code" placeholder="Enter Post code" required="required">
                 </div>    
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label for="exampleInputEmail1">Select Post-Code For</label><br>
                   <div style="margin-left: 10px;"> <b> Franchise</b> <input type="radio" name="main" class="radio_button" value="franchise" required="required" >
                   <b style="margin-left: 10px;">Main </b> <input type="radio" name="main" class="radio_button" value="main" checked="checked" required="required" >
@@ -46,8 +46,8 @@
                                         <strong style="color:red;">{{ $errors->first('main') }}</strong>
                                     </span>
                                 @endif
-                </div>
-
+                </div> -->
+<!-- 
                 <div class="form-group selectfranchise" style="display: none;">
                   <label for="exampleInputEmail1">Franchise</label>
                     <select class="form-control selectdropdownfr" name="franchise_id">
@@ -57,7 +57,7 @@
                         @endforeach
                     </select>
                   
-                </div>
+                </div> -->
 
                 <div class="form-group">
                   <label for="exampleInputPassword1">Status</label>

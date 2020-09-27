@@ -24,6 +24,9 @@ use App\Models\Postcode;
 use App\Models\ProductAttribute;
 use App\Models\Setting;
 use App\Models\PaymentGetway;
+use App\Models\ProductFeatureAttribute;
+use App\Models\ProductFeature;
+use App\Models\OrderAttribute;
 
 class PaymentsController extends Controller
 {
@@ -40,28 +43,34 @@ class PaymentsController extends Controller
  */
     public function paypal(Request $request)
     {	
- 				//echo '<pre>';print_r($_POST);die;
         $steps = array();
         $product_detail = array();
 
         $cart_itemslist = Cart::with('product')->where('user_id','=', Auth::user()->id)->get();
         $shipping_taxes = ShippingTax::first();
         $total = 0;
-
+        $request->take_order = (!empty($request->take_order))?$request->take_order:'takeaway';
+        //echo '<pre>';print_r($_POST);die;
         if (!empty($cart_itemslist[0])) {
           foreach ($cart_itemslist as $key => $cartlistdetail) {     
               $attributes = $this->getAttributeDetail($cartlistdetail->productItem_ids);            
               $total += (($cartlistdetail->product->price+$attributes['amount']) * $cartlistdetail->qty);
           }
 
-          if (!empty($shipping_taxes->shipping_amount) && $shipping_taxes->shipping_type == 'Paid') {
+          if($request->take_order == 'delivery'){
 
-          $shippingamount = $shipping_taxes->shipping_amount;
+            if (!empty($shipping_taxes->shipping_amount) && $shipping_taxes->shipping_type == 'Paid') {
 
-          }else {
+            $shippingamount = $shipping_taxes->shipping_amount;
 
-          $shippingamount = 0;
+            }else {
+
+            $shippingamount = 0;
+            }
+          }else{
+            $shippingamount = 0;
           }
+
 
           if (!empty($shipping_taxes->tax_percent) && $shipping_taxes->tax_percent > 0) {              
             $tax_amount =  ($total * $shipping_taxes->tax_percent) / 100;
@@ -94,8 +103,9 @@ class PaymentsController extends Controller
           }
         }
 
-        if (!empty($cart_itemslist[0])) {           
-                  
+        if (!empty($cart_itemslist[0])) {   
+
+            if($request->take_order == 'delivery'){
               $steps['deliveryAddress'] = isset($request->deliveryAddress) ? $request->deliveryAddress : '';
               $postcode_list = Postcode::where('post_code','=',$steps['deliveryAddress']['postcode'])->first();
 
@@ -117,7 +127,27 @@ class PaymentsController extends Controller
                 Session::flash('error_h1','Postcode');
                 Session::flash('error','Food delivery not able to your Postcode, Change Postcode');
                 return redirect('/shopping-cart');
-              }              
+              }  
+
+            }else{
+
+                $steps['step'] = 'step_2';
+                $steps['total'] = $total;
+                $steps['user'] = $request->user;
+                $steps['tax_amount'] = $tax_amount; 
+                $steps['maintotal'] = $maintotal; 
+                $steps['coupon_discount'] = $coupon_discount; 
+                $steps['shippingamount'] = $shippingamount; 
+                $steps['shipping_type'] = $shipping_taxes->shipping_type; 
+                $steps['tax_percentage'] = $shipping_taxes->tax_percent; 
+                if (Session::has('shoppingstep')) {
+                    Session::forget('shoppingstep.step');
+                }
+                Session::put('shoppingstep', $steps);
+
+            }      
+                  
+            
             
           
         }
@@ -129,17 +159,171 @@ class PaymentsController extends Controller
 
        if ($request->payment_type == 'Cod') {
 
-            $this->cod();
-        Session::flash('success','Your order Place successfully');
-        return Redirect::to('/cart-thankyou');
+            $this->cod($request->take_order);
+            Session::flash('success','Your order Place successfully');
+            return Redirect::to('/cart-thankyou');
+
        }elseif($request->payment_type == 'Stripe'){
 
+          $this->stripe($request);
+       }      
         
-        $user_address_id = '';
+        
+    }
+
+
+    private function cod($take_order){
+
+
+        $payment_id = 'cod';
+        
+        $user_address_id = 0;
         $delivery_address = '';
         $delivery_postcode = '';
         $delivery_phone = '';   
+       // print_r($_POST);die;
+        $tax_amount = (!empty(Session::get('shoppingstep.tax_amount')))?Session::get('shoppingstep.tax_amount'):'';
+        $subtotal = (!empty(Session::get('shoppingstep.total')))?Session::get('shoppingstep.total'):'';
+        $maintotal = (!empty(Session::get('shoppingstep.maintotal')))?Session::get('shoppingstep.maintotal'):'';
+        $shippingamount = (!empty(Session::get('shoppingstep.shippingamount')))?Session::get('shoppingstep.shippingamount'):'';
+        $shipping_type = (!empty(Session::get('shoppingstep.shipping_type')))?Session::get('shoppingstep.shipping_type'):'';
+        $tax_percentage = (!empty(Session::get('shoppingstep.tax_percentage')))?Session::get('shoppingstep.tax_percentage'):'';
 
+        $coupon_discount = (Session::has('apply_coupon') && !empty(Session::get('shoppingstep.coupon_discount')))?Session::get('shoppingstep.coupon_discount'):'';
+        $coupon_code = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_code')))?Session::get('apply_coupon.coupon_code'):'';
+        $coupon_type = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_type')))?Session::get('apply_coupon.coupon_type'):'';
+        $coupon_amount = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_amount')))?Session::get('apply_coupon.coupon_amount'):'';
+
+        if(Session::has('shoppingstep.deliveryAddress')){
+          $user_address_id = Session::get('shoppingstep.deliveryAddress.address_id');
+          $delivery_address = Session::get('shoppingstep.deliveryAddress.address');
+          $delivery_postcode = Session::get('shoppingstep.deliveryAddress.postcode');
+          $delivery_phone = Session::get('shoppingstep.deliveryAddress.phone');
+        }
+            
+        
+        //$result = $payment->execute($execution, $this->_api_context);
+        
+    
+  
+        $order_number = $this->random_num(7);
+       
+        $order = new Order;
+        $order->order_number = $order_number;
+        $order->payment_id = 'cod';
+        $order->user_id =  Auth::user()->id;
+        $order->total_amount =  (Session::has('shoppingstep.maintotal'))?Session::get('shoppingstep.maintotal'):0;
+        
+        $total_qty = 0;
+        $cartIds = array();
+        $productIds = array();
+        $cart_itemslist = Cart::where('user_id','=', Auth::user()->id)->get();
+        if(!empty($cart_itemslist)){
+          foreach($cart_itemslist as $cart){
+            $total_qty += $cart->qty;
+            $cartIds[$cart->id] = $cart->id;
+            $productIds[$cart->product_id] = $cart->product_id;
+            
+          }
+        }
+  
+        $order->total_qty  = $total_qty;
+        $order->payment_status  = 'cod';
+        $order->product_ids  = serialize($productIds);
+        $order->order_status  = 'Order Confirmed'; //kz 28 dec
+        $order->user_address_id  = $user_address_id; 
+        $order->delivery_address  = $delivery_address; 
+        $order->delivery_postcode  = $delivery_postcode; 
+        $order->delivery_phone  = $delivery_phone; 
+
+        $order->tax_amount  = $tax_amount; 
+        $order->maintotal  = $maintotal; 
+        $order->shippingamount  = $shippingamount; 
+        $order->shipping_type  = $shipping_type; 
+        $order->tax_percentage  = $tax_percentage; 
+        $order->subtotal  = $subtotal; 
+        $order->coupon_discount  = $coupon_discount; 
+        $order->coupon_code  = $coupon_code; 
+        $order->coupon_type  = $coupon_type; 
+        $order->coupon_amount  = $coupon_amount; 
+        $order->payment_mode  = 'cod'; 
+        $order->take_order  = $take_order; 
+        $order->save();
+  
+        
+        $orderStatus = new OrderDeliveryStatus();
+        $orderStatus->order_id = $order->id;
+        $orderStatus->order_status = 'Order Confirmed';
+        $orderStatus->order_status_type = 'confirmed';
+        $orderStatus->user_type = 'admin';
+        $orderStatus->user_id = 1;
+        $orderStatus->created_at = date('Y-m-d H:i:s');
+        $orderStatus->updated_at = date('Y-m-d H:i:s');
+        $orderStatus->save();
+  
+  
+        $cart_itemslist = Cart::with('product')->where('user_id','=', Auth::user()->id)->get();
+         if(!empty($cart_itemslist)){
+           foreach($cart_itemslist as $cart){
+            $attributes = $this->getAttributeDetail($cart->productItem_ids);            
+            $subtotal = ($cart->product->price+$attributes['amount']);
+            $total = (($cart->product->price+$attributes['amount']) * $cart->qty);
+             // save data in cart item table
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $cart->product_id;
+            $orderItem->productFeatureItem_id = $cart->productItem_ids;
+
+            $product_detail = $this->getproduct_detail($cart->product_id);
+            //echo '<pre>';print_r($product_detail);die;
+            $orderItem->user_id = Auth::user()->id;
+            $orderItem->is_pre_order = (isset($product_detail['is_pre_order'])&& !empty($product_detail['is_pre_order']))?$product_detail['is_pre_order']:0;
+            $orderItem->order_date = (isset($product_detail['order_date'])&& !empty($product_detail['order_date']))?$product_detail['order_date']:date("Y-m-d");
+            $orderItem->product_name = $cart->product->name;
+            $orderItem->product_image = $cart->product->image;
+            $orderItem->qty =  $cart->qty;
+            $orderItem->amount = $subtotal;
+            $orderItem->total_amount = $total;
+
+
+            
+            $orderItem->save();
+            $this->saveAttributedetail($cart->productItem_ids,$order->id,$orderItem->id);
+
+           }
+         }
+  
+  
+  
+        // deleting user cart by cartids
+        $this->deleteUserCartByIds($cartIds);
+  
+        // distory user cart session
+        $this->distoryUserCartSession();      
+
+        // send order mail to user
+        
+        $this->sendmailtocustomer($order_number);
+
+        if (Session::has('apply_coupon')) {
+                Session::forget('apply_coupon');
+        }
+        Session::flash('success_h1','Payment');
+        
+        Session::flash('success','Payment successfully');          
+
+        
+        return true;
+        
+          
+    }
+    public function stripe($request){
+
+        $user_address_id = 0;
+        $delivery_address = '';
+        $delivery_postcode = '';
+        $delivery_phone = '';   
+        //echo "<pre>";print_r($request->stripe);die;
         $tax_amount = (!empty(Session::get('shoppingstep.tax_amount')))?Session::get('shoppingstep.tax_amount'):'';
         $subtotal = (!empty(Session::get('shoppingstep.total')))?Session::get('shoppingstep.total'):'';
         $maintotal = (!empty(Session::get('shoppingstep.maintotal')))?Session::get('shoppingstep.maintotal'):'';
@@ -290,7 +474,7 @@ class PaymentsController extends Controller
 
             $payment_id = $payment_result->balance_transaction;
             
-            $user_address_id = '';
+            $user_address_id = 0;
             $delivery_address = '';
             $delivery_postcode = '';
             $delivery_phone = '';   
@@ -360,6 +544,7 @@ class PaymentsController extends Controller
             $order->coupon_type  = $coupon_type; 
             $order->coupon_amount  = $coupon_amount; 
             $order->payment_mode  = 'paid'; 
+            $order->take_order  = $request->take_order; 
             $order->save();
       
             
@@ -386,6 +571,7 @@ class PaymentsController extends Controller
                 $orderItem->product_id = $cart->product_id;
                 $orderItem->productFeatureItem_id = $cart->productItem_ids;
 
+
                 $product_detail = $this->getproduct_detail($cart->product_id);
                 //echo '<pre>';print_r($product_detail);die;
                 $orderItem->user_id = Auth::user()->id;
@@ -398,6 +584,7 @@ class PaymentsController extends Controller
                 $orderItem->total_amount = $total;
                 
                 $orderItem->save();
+                $this->saveAttributedetail($cart->productItem_ids,$order->id,$orderItem->id);
                }
              }
       
@@ -421,156 +608,52 @@ class PaymentsController extends Controller
           return Redirect::to('/cart-thankyou');
 
         }
-
-
-         return Redirect::to('/');
-       }      
         
         
-    }
-
-
-    private function cod(){
-
-
-        $payment_id = 'cod';
-        
-        $user_address_id = '';
-        $delivery_address = '';
-        $delivery_postcode = '';
-        $delivery_phone = '';   
-
-        $tax_amount = (!empty(Session::get('shoppingstep.tax_amount')))?Session::get('shoppingstep.tax_amount'):'';
-        $subtotal = (!empty(Session::get('shoppingstep.total')))?Session::get('shoppingstep.total'):'';
-        $maintotal = (!empty(Session::get('shoppingstep.maintotal')))?Session::get('shoppingstep.maintotal'):'';
-        $shippingamount = (!empty(Session::get('shoppingstep.shippingamount')))?Session::get('shoppingstep.shippingamount'):'';
-        $shipping_type = (!empty(Session::get('shoppingstep.shipping_type')))?Session::get('shoppingstep.shipping_type'):'';
-        $tax_percentage = (!empty(Session::get('shoppingstep.tax_percentage')))?Session::get('shoppingstep.tax_percentage'):'';
-
-        $coupon_discount = (Session::has('apply_coupon') && !empty(Session::get('shoppingstep.coupon_discount')))?Session::get('shoppingstep.coupon_discount'):'';
-        $coupon_code = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_code')))?Session::get('apply_coupon.coupon_code'):'';
-        $coupon_type = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_type')))?Session::get('apply_coupon.coupon_type'):'';
-        $coupon_amount = (Session::has('apply_coupon') && !empty(Session::get('apply_coupon.coupon_amount')))?Session::get('apply_coupon.coupon_amount'):'';
-
-        if(Session::has('shoppingstep.deliveryAddress')){
-          $user_address_id = Session::get('shoppingstep.deliveryAddress.address_id');
-          $delivery_address = Session::get('shoppingstep.deliveryAddress.address');
-          $delivery_postcode = Session::get('shoppingstep.deliveryAddress.postcode');
-          $delivery_phone = Session::get('shoppingstep.deliveryAddress.phone');
-        }
-            
-        
-        //$result = $payment->execute($execution, $this->_api_context);
-        
-    
-  
-        $order_number = $this->random_num(7);
-       
-        $order = new Order;
-        $order->order_number = $order_number;
-        $order->payment_id = 'cod';
-        $order->user_id =  Auth::user()->id;
-        $order->total_amount =  (Session::has('shoppingstep.maintotal'))?Session::get('shoppingstep.maintotal'):0;
-        
-        $total_qty = 0;
-        $cartIds = array();
-        $productIds = array();
-        $cart_itemslist = Cart::where('user_id','=', Auth::user()->id)->get();
-        if(!empty($cart_itemslist)){
-          foreach($cart_itemslist as $cart){
-            $total_qty += $cart->qty;
-            $cartIds[$cart->id] = $cart->id;
-            $productIds[$cart->product_id] = $cart->product_id;
-            
-          }
-        }
-  
-        $order->total_qty  = $total_qty;
-        $order->payment_status  = 'cod';
-        $order->product_ids  = serialize($productIds);
-        $order->order_status  = 'Order Confirmed'; //kz 28 dec
-        $order->user_address_id  = $user_address_id; 
-        $order->delivery_address  = $delivery_address; 
-        $order->delivery_postcode  = $delivery_postcode; 
-        $order->delivery_phone  = $delivery_phone; 
-
-        $order->tax_amount  = $tax_amount; 
-        $order->maintotal  = $maintotal; 
-        $order->shippingamount  = $shippingamount; 
-        $order->shipping_type  = $shipping_type; 
-        $order->tax_percentage  = $tax_percentage; 
-        $order->subtotal  = $subtotal; 
-        $order->coupon_discount  = $coupon_discount; 
-        $order->coupon_code  = $coupon_code; 
-        $order->coupon_type  = $coupon_type; 
-        $order->coupon_amount  = $coupon_amount; 
-        $order->payment_mode  = 'cod'; 
-        $order->save();
-  
-        
-        $orderStatus = new OrderDeliveryStatus();
-        $orderStatus->order_id = $order->id;
-        $orderStatus->order_status = 'Order Confirmed';
-        $orderStatus->order_status_type = 'confirmed';
-        $orderStatus->user_type = 'admin';
-        $orderStatus->user_id = 1;
-        $orderStatus->created_at = date('Y-m-d H:i:s');
-        $orderStatus->updated_at = date('Y-m-d H:i:s');
-        $orderStatus->save();
-  
-  
-        $cart_itemslist = Cart::with('product')->where('user_id','=', Auth::user()->id)->get();
-         if(!empty($cart_itemslist)){
-           foreach($cart_itemslist as $cart){
-            $attributes = $this->getAttributeDetail($cart->productItem_ids);            
-            $subtotal = ($cart->product->price+$attributes['amount']);
-            $total = (($cart->product->price+$attributes['amount']) * $cart->qty);
-             // save data in cart item table
-            $orderItem = new OrderItem();
-            $orderItem->order_id = $order->id;
-            $orderItem->product_id = $cart->product_id;
-            $orderItem->productFeatureItem_id = $cart->productItem_ids;
-
-            $product_detail = $this->getproduct_detail($cart->product_id);
-            //echo '<pre>';print_r($product_detail);die;
-            $orderItem->user_id = Auth::user()->id;
-            $orderItem->is_pre_order = (isset($product_detail['is_pre_order'])&& !empty($product_detail['is_pre_order']))?$product_detail['is_pre_order']:0;
-            $orderItem->order_date = (isset($product_detail['order_date'])&& !empty($product_detail['order_date']))?$product_detail['order_date']:date("Y-m-d");
-            $orderItem->product_name = $cart->product->name;
-            $orderItem->product_image = $cart->product->image;
-            $orderItem->qty =  $cart->qty;
-            $orderItem->amount = $subtotal;
-            $orderItem->total_amount = $total;
-            
-            $orderItem->save();
-           }
-         }
-  
-  
-  
-        // deleting user cart by cartids
-        $this->deleteUserCartByIds($cartIds);
-  
-        // distory user cart session
-        $this->distoryUserCartSession();      
-
-        // send order mail to user
-        
-        $this->sendmailtocustomer($order_number);
-
-        if (Session::has('apply_coupon')) {
-                Session::forget('apply_coupon');
-        }
-        Session::flash('success_h1','Payment');
-        
-        Session::flash('success','Payment successfully');          
-
-        
-        return true;
+          return Redirect::to('/shopping-cart');
         
           
     }
 
+    public function saveAttributedetail($value=array(),$order_id,$order_itemid)
+    {
+      $attrArr = array();
+      if (!empty($value)) {
+        $attrArr = unserialize($value);
+
+        foreach ($attrArr as $key => $value) {
+          if (!empty($value)) {
+
+            $product_attributes = ProductAttribute::where('id', $value)->first();
+            if (!empty($product_attributes)) {
+              $product_featureAttributes = ProductFeatureAttribute::with('productFeature')->where('id', $product_attributes->attribute)->first();
+              if (!empty($product_featureAttributes)) {
+                $productFeatures = ProductFeature::where('id', $product_attributes->feature_id)->first();
+                if (!empty($productFeatures)) {
+
+                  
+                    $orderAttribute = new OrderAttribute;
+                
+                    $orderAttribute->price = $product_attributes->price;
+                    $orderAttribute->is_same_price = $product_attributes->is_same_price;
+                    $orderAttribute->price_type = $product_attributes->price_type;
+                    $orderAttribute->attribute_id = $product_attributes->attribute;
+                    $orderAttribute->name = $product_featureAttributes->name;
+                    $orderAttribute->order_id = $order_id;
+                    $orderAttribute->order_item_id = $order_itemid;
+                    $orderAttribute->feature_name = $productFeatures->value;
+                    $orderAttribute->save();
+                                 
+                }                
+              }              
+
+            }
+           
+          }
+
+        }
+      }
+    }
 
     public function getPaymentStatus()
     {
@@ -1026,24 +1109,24 @@ class PaymentsController extends Controller
  * @return \Illuminate\Http\Response
  */
 	public function random_num($size) {
-	$alpha_key = '';
-	$keys = range('A', 'Z');
+  	$alpha_key = '';
+  	$keys = range('A', 'Z');
 
-	for ($i = 0; $i < 2; $i++) {
-		$alpha_key .= $keys[array_rand($keys)];
-	}
+  	for ($i = 0; $i < 2; $i++) {
+  		$alpha_key .= $keys[array_rand($keys)];
+  	}
 
-	$length = $size - 2;
+  	$length = $size - 2;
 
-	$key = '';
-	$keys = range(0, 9);
+  	$key = '';
+  	$keys = range(0, 9);
 
-	for ($i = 0; $i < $length; $i++) {
-		$key .= $keys[array_rand($keys)];
-	}
+  	for ($i = 0; $i < $length; $i++) {
+  		$key .= $keys[array_rand($keys)];
+  	}
 
-	return $alpha_key . $key;
-}
+  	return $alpha_key . $key;
+  }
 
 
     public function cancel()

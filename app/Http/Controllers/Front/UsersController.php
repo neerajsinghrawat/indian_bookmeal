@@ -277,6 +277,48 @@ class UsersController extends Controller
 		
         return \Redirect::to('dashboard');
 
+	}/**
+ * edit_profile the specified resource in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+	public function add_address_new(Request $request)
+	{
+		//echo '<pre>';print_r($request['address']);die;
+	    $resultArr = array();
+	    $resultArr['result'] = 0;
+		if ($request->isMethod('post')) {
+			
+
+				$userAddress = new UserAddress;		
+	            $userAddress->address = $request['address'];
+	            $userAddress->postcode = $request['postcode'];
+	            $userAddress->title = $request['title'];
+	            $userAddress->type = $request['type'];
+	            $userAddress->phone = $request['phone'];
+	            $userAddress->user_id = Auth::user()->id;
+	            $userAddress->save();
+
+		    if(!empty($userAddress->id)){
+	            $deliveryAddress =  UserAddress::where('user_id','=',Auth::user()->id)->where('id','=',$userAddress->id)->first();
+	            if(!empty($deliveryAddress)){
+	                 $resultArr['result'] = 1;
+	                $resultArr['delivery_address_id'] = $deliveryAddress->id;
+	                $resultArr['delivery_address'] = $deliveryAddress->address;
+	                 $resultArr['delivery_title'] = $deliveryAddress->title;
+	                $resultArr['delivery_postcode'] = $deliveryAddress->postcode;
+	                $resultArr['delivery_phone'] = $deliveryAddress->phone;
+	            }
+	        }
+			
+		}
+
+		
+   		echo json_encode($resultArr); exit();
+        
+
 	}
 
  /**

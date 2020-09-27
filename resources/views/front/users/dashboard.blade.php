@@ -8,7 +8,7 @@
     <div class="bg-image bg-parallax"><img src="{{asset('css/front/img/bg-desk.jpg')}}" alt=""></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 offset-lg-4">
+            <div class="col-lg-8 offset-lg-2 text-center">
                 <h1 class="mb-0">Dashboard</h1>
                 <h4 class="text-muted mb-0">Some informations about our restaurant</h4>
             </div>

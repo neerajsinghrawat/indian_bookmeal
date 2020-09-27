@@ -66,11 +66,11 @@ class LoginController extends Controller
     public function showLoginForm(Request $request,$slug = null)
     {
    
-      if (Session::has('product_slug')) {
+      if (Session::has('login_slug')) {
         
-        Session::forget('product_slug');
+        Session::forget('login_slug');
       }
-      Session::put('product_slug', $slug);
+      Session::put('login_slug', $slug);
 
       return view('auth.login');
     }
@@ -93,9 +93,9 @@ class LoginController extends Controller
 
          if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-          if (Session::has('product_slug')) {
+          if (Session::has('login_slug')) {
             
-              return redirect('/product'.'/'.Session::get('product_slug'));
+              return redirect('/'.Session::get('login_slug'));
               
           }
             return redirect('/login');

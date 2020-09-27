@@ -35,7 +35,7 @@
                   <label for="exampleInputEmail1">Post code</label>
                   <input type="text" class="form-control" name="post_code" placeholder="Enter Post code" required="required" value="{{ $postcodes['post_code'] }}">
                 </div>    
-
+<!-- 
                 <div class="form-group">
                   <label for="exampleInputEmail1">Select Post-Code For</label><br>
                   <div style="margin-left: 10px;"> <b> Franchise</b> <input type="radio" name="main" class="radio_button" value="franchise" required="required" {{ ($postcodes['main'] == '0')?'checked=checked':'' }}>
@@ -58,7 +58,7 @@
                         @endforeach
                     </select>
                   
-                </div>
+                </div> -->
 
                 <div class="form-group">
                   <label for="exampleInputPassword1">Status</label>

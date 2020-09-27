@@ -59,7 +59,7 @@ class PostcodesController extends Controller
             $postcode->post_code = trim($request->post_code);
             $postcode->status = ($request->status == 'on')?1:0;
 
-            if (isset($request->franchise_id) && !empty($request->franchise_id)) {
+            /*if (isset($request->franchise_id) && !empty($request->franchise_id)) {
 
                 $postcode->franchise_id = $request->franchise_id;
                  $postcode->main = 0;
@@ -67,7 +67,7 @@ class PostcodesController extends Controller
             }else{
 
                 $postcode->franchise_id = 0;
-            }            
+            }            */
     				
                   
             if($postcode->save()){
@@ -114,7 +114,7 @@ class PostcodesController extends Controller
 	       $postcode->post_code = trim($request->post_code);
 	       $postcode->status = ($request->status == 'on')?1:0;
 
-	       if (isset($request->franchise_id) && !empty($request->franchise_id)) {
+	       /*if (isset($request->franchise_id) && !empty($request->franchise_id)) {
 
                 $postcode->franchise_id = $request->franchise_id;
                 $postcode->main = 0;
@@ -123,7 +123,7 @@ class PostcodesController extends Controller
 
                 $postcode->franchise_id = 0;
                 $postcode->main = 1;
-            }
+            }*/
     				
             if($postcode->save()){
 

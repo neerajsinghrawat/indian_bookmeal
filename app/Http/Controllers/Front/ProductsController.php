@@ -20,7 +20,7 @@ use App\Models\ProductFeature;
 use App\Models\ProductFeatureAttribute;
 use App\Models\ProductAttribute;
 use App\Models\PaymentGetway;
-
+use Illuminate\Support\Facades\Cookie;
 use Session;
 use Auth;
 use DB;
@@ -372,7 +372,7 @@ class ProductsController extends Controller
   {         
     $html ='';
     //echo '<pre>';print_r($_POST);die;
-    if(Auth::check()){
+    /*if(Auth::check()){*/
       if ($request->isMethod('post')) {
 
         $product_details = Product::with('productAttribute')->where('status','=', 1)->where('id','=', $request->productid)->first();
@@ -389,7 +389,8 @@ class ProductsController extends Controller
                 
             $feature =array();
             $feature = explode(',', $product_details->product_feature);  
-            if (!empty($feature)) {
+            if (!empty($feature[0])) {
+              //echo '<pre>';print_r($feature);die;
             foreach ($feature as $key => $value) {                      
                 
 
@@ -417,8 +418,8 @@ class ProductsController extends Controller
             } }
                
                
-            $html .='<div class="panel-details"><h5 class="panel-details-title"><label class="custom-control custom-radio"><input name="radio_title_size" type="radio" class="custom-control-input"><span class="custom-control-indicator"><svg class="icon" x="0px" y="0px" viewBox="0 0 32 32"><path stroke-dasharray="19.79 19.79" stroke-dashoffset="19.79" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="square" stroke-miterlimit="10" d="M9,17l3.9,3.9c0.1,0.1,0.2,0.1,0.3,0L23,11"></path></svg></span></label><a href="#panelDetailsOther" data-toggle="collapse">Other</a>
-                </h5><div id="panelDetailsOther" class="collapse"><textarea cols="30" rows="4" class="form-control" readonly>'.$product_details->allergen_key.'</textarea></div>
+            $html .='<div class="panel-details"><h5 class="panel-details-title"><label class="custom-control custom-radio"><input name="radio_title_size" type="radio" class="custom-control-input"><span class="custom-control-indicator"><svg class="icon" x="0px" y="0px" viewBox="0 0 32 32"><path stroke-dasharray="19.79 19.79" stroke-dashoffset="19.79" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="square" stroke-miterlimit="10" d="M9,17l3.9,3.9c0.1,0.1,0.2,0.1,0.3,0L23,11"></path></svg></span></label><a href="#panelDetailsOther" data-toggle="collapse">Allergen Key</a>
+                </h5><div id="panelDetailsOther" class="collapse"><span class="text-muted">'.$product_details->allergen_key.'</span></div>
                 </div>
             </div>
             <input type="hidden" class="totalAmount" value="'.$product_details->price.'">
@@ -434,9 +435,9 @@ class ProductsController extends Controller
 
                
       }
-    }else{
+    /*}else{
 
-    }
+    }*/
     return $html;
   }
 
@@ -452,7 +453,7 @@ class ProductsController extends Controller
   {         
     $html ='';
     //echo '<pre>';print_r($_POST);die;
-    if(Auth::check()){
+    /*if(Auth::check()){*/
       if ($request->isMethod('post')) {
 
         $product_details = Product::with('productAttribute')->where('status','=', 1)->where('id','=', $request->productid)->first();
@@ -472,7 +473,7 @@ class ProductsController extends Controller
                 
             $feature =array();
             $feature = explode(',', $product_details->product_feature);  
-            if (!empty($feature)) {
+            if (!empty($feature[0])) {
             foreach ($feature as $key => $value) {                      
                 
 
@@ -505,8 +506,8 @@ class ProductsController extends Controller
             } }
                
                
-            $html .='<div class="panel-details"><h5 class="panel-details-title"><label class="custom-control custom-radio"><input name="radio_title_size" type="radio" class="custom-control-input"><span class="custom-control-indicator"><svg class="icon" x="0px" y="0px" viewBox="0 0 32 32"><path stroke-dasharray="19.79 19.79" stroke-dashoffset="19.79" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="square" stroke-miterlimit="10" d="M9,17l3.9,3.9c0.1,0.1,0.2,0.1,0.3,0L23,11"></path></svg></span></label><a href="#panelDetailsOther" data-toggle="collapse">Other</a>
-                </h5><div id="panelDetailsOther" class="collapse"><textarea cols="30" rows="4" class="form-control" readonly>'.$product_details->allergen_key.'</textarea></div>
+            $html .='<div class="panel-details"><h5 class="panel-details-title"><label class="custom-control custom-radio"><input name="radio_title_size" type="radio" class="custom-control-input"><span class="custom-control-indicator"><svg class="icon" x="0px" y="0px" viewBox="0 0 32 32"><path stroke-dasharray="19.79 19.79" stroke-dashoffset="19.79" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="square" stroke-miterlimit="10" d="M9,17l3.9,3.9c0.1,0.1,0.2,0.1,0.3,0L23,11"></path></svg></span></label><a href="#panelDetailsOther" data-toggle="collapse">Allergen Key</a>
+                </h5><div id="panelDetailsOther" class="collapse"><span class="custom-control-description">'.$product_details->allergen_key.'</span></div>
                 </div>
             </div>
             <input type="hidden" class="totalAmount" value="'.$product_details->price.'">
@@ -523,9 +524,9 @@ class ProductsController extends Controller
 
                
       }
-    }else{
+    /*}else{
 
-    }
+    }*/
     return $html;
   }
 
@@ -543,47 +544,64 @@ class ProductsController extends Controller
   {         
     $html ='';
 
-    if(Auth::check()){
+    /*if(Auth::check()){*/
       if ($request->isMethod('post')) {
 
           $current_date = date('Y-m-d');
-          $conditions = array(Auth::user()->group_id => Auth::user()->group_id,0 => 0);
-          
 
-          $cart_list = Cart::with('product')->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
-          
-          $couponcode_lists = Couponcode::with('couponItem')->where('status','=', 1)->where('start_date','<=', $current_date)->where('expire_date','>=', $current_date)->whereIn('group_id',$conditions)->get();
+          if (Auth::check()) {
+            $conditions = array(Auth::user()->group_id => Auth::user()->group_id,0 => 0);
+            
+
+            $cart_list = Cart::with('product')->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
+            
+            $couponcode_lists = Couponcode::with('couponItem')->where('status','=', 1)->where('start_date','<=', $current_date)->where('expire_date','>=', $current_date)->whereIn('group_id',$conditions)->get();
+
+          }else{
+
+            $conditions = array();
+            
+
+            $cart_list = Cart::with('product')->where('cart_set_id','=', Cookie::get('cart_set_id'))->get();
+            
+            $couponcode_lists = array();
+
+          }
+
           
           $couponn = array();
-          foreach ($cart_list as $key1 => $cart_value) {
-              foreach ($couponcode_lists as $key3 => $couponcodeList) {
+          if (!empty($couponcode_lists)) {
+                foreach ($cart_list as $key1 => $cart_value) {
+                  foreach ($couponcode_lists as $key3 => $couponcodeList) {
 
-                $appliedCoupon = order::where('coupon_code','=', $couponcodeList->code)->count();
+                    $appliedCoupon = order::where('coupon_code','=', $couponcodeList->code)->count();
 
-                $appliedUserCoupon = order::where('coupon_code','=', $couponcodeList->code)->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->count();
+                    $appliedUserCoupon = order::where('coupon_code','=', $couponcodeList->code)->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->count();
 
-                if (($couponcodeList->coupon_count > $appliedCoupon) && ($couponcodeList->use_code_times > $appliedUserCoupon)) {
-                  if($couponcodeList->apply_for == "cart"){
-                     $couponn[$couponcodeList->id] = $couponcodeList->id; 
+                    if (($couponcodeList->coupon_count > $appliedCoupon) && ($couponcodeList->use_code_times > $appliedUserCoupon)) {
+                      if($couponcodeList->apply_for == "cart"){
+                         $couponn[$couponcodeList->id] = $couponcodeList->id; 
 
-                  }else{
-                    foreach ($couponcodeList->couponItem as $key4 => $value) {
-                     if ($value->apply_for == 'product' && $value->product_id == $cart_value->product_id) {
-                      $couponn[$value->couponcode_id] = $value->couponcode_id; 
-                     }elseif ($value->apply_for == 'category' && $value->category_id == $cart_value['product']['sub_category_id']){
-                      //
-                      $couponn[$value->couponcode_id] = $value->couponcode_id; 
+                      }else{
+                        foreach ($couponcodeList->couponItem as $key4 => $value) {
+                         if ($value->apply_for == 'product' && $value->product_id == $cart_value->product_id) {
+                          $couponn[$value->couponcode_id] = $value->couponcode_id; 
+                         }elseif ($value->apply_for == 'category' && $value->category_id == $cart_value['product']['sub_category_id']){
+                          //
+                          $couponn[$value->couponcode_id] = $value->couponcode_id; 
 
-                     }
+                         }
+                        }
+                      }
+
+                    }else{
+
                     }
-                  }
-
-                }else{
-
-                }
-                
-              }      
+                    
+                  }      
+              }
           }
+
    
           $shipping_taxes = ShippingTax::first();
 
@@ -623,7 +641,10 @@ class ProductsController extends Controller
                     <div class="col-5"><strong><span class="cart-products-totals">'. getSiteCurrencyType().$total.'</span></strong></div>
                 </div>
                 <div class="row">
-                    <div class="col-7 text-right text-muted">Tax:</div>
+                    <div class="col-7 text-right text-muted">Tax(';
+
+                     $html .= (!empty($shipping_taxes->tax_percent))?$shipping_taxes->tax_percent:0;
+                     $html .='%):</div>
                     <div class="col-5"><strong><span class="tax_total">';
                     
 
@@ -641,8 +662,10 @@ class ProductsController extends Controller
                     <div class="col-5"><strong><span class="cart-deliverys">';
 
                     if (!empty($shipping_taxes->shipping_amount) && $shipping_taxes->shipping_type == 'Paid' ) {
-                         $total_amount = $shipping_taxes->shipping_amount + $total_amount;
-                 $html .= getSiteCurrencyType().$shipping_taxes->shipping_amount;
+                         //$total_amount = $shipping_taxes->shipping_amount + $total_amount;
+                         //$total_amount = $shipping_taxes->shipping_amount + $total_amount;
+                 //$html .= getSiteCurrencyType().$shipping_taxes->shipping_amount;
+                 $html .= getSiteCurrencyType().'0';
                      }else{
                  $html .= 'Free';
                      } 
@@ -673,14 +696,14 @@ class ProductsController extends Controller
 
           }
       }
-    }else{
+    /*}else{
 
 
       $html .='<div class="cart-empty" style="display: block;">
                     <i class="ti ti-shopping-cart"></i>
                     <p>Your cart is empty...</p>
                 </div>';     
-    }
+    }*/
 
         
     return $html;
@@ -735,8 +758,9 @@ class ProductsController extends Controller
     $result['cart_count'] = 0;
     $result['response'] = 0;
     $oldqty = 0;
+    $cookie_id = Cookie::get('cart_set_id');
     //echo '<pre>';print_r($_POST);die;
-    if(Auth::check()){
+    /*if(Auth::check()){*/
       if ($request->isMethod('post')) {
 
         $set_id = new Cart;
@@ -758,7 +782,14 @@ class ProductsController extends Controller
         if(!empty($products)){
          //echo '<pre>';print_r($_POST);die;
             $cart = $set_id;
-            $cart->user_id = Auth::user()->id;
+            if(Auth::check()){
+              $cart->user_id = Auth::user()->id;
+              $cart->cart_set_id = $cookie_id;
+            }else{
+                            
+              $cart->cart_set_id = $cookie_id;
+
+            }
             $cart->product_id = $request->product_id;
             $cart->qty = $qty+$oldqty; 
 
@@ -769,13 +800,24 @@ class ProductsController extends Controller
             
             $cart->save();
 
-            $cart_count = Cart::where('user_id','=', Auth::user()->id)->count();
+            if(Auth::check()){
+              $cart_count = Cart::where('user_id','=', Auth::user()->id)->count();
+            }else{
+              $cart_count = Cart::where('cart_set_id','=', $cookie_id)->count();
+            }
+
             $result['cart_count'] = $cart_count;
             $result['cart_amount'] = 0;
             $result['response'] = 1;
 
               $total = 0;
+            if(Auth::check()){
               $cart_list = Cart::with('product')->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
+            }else{
+              $cart_list = Cart::with('product')->where('cart_set_id','=', $cookie_id)->get();
+              //$cart_count = Cart::where('cart_set_id','=', $cookie_id)->count();
+            }
+              
               
               $couponn = array();
               foreach ($cart_list as $key1 => $cart_value) {
@@ -814,9 +856,9 @@ class ProductsController extends Controller
             Session::put('cart_count', $cart_count);
         }        
       }
-    }else{
+    /*}else{
 
-    }
+    }*/
     return response()->json($result);
   }
 
@@ -833,21 +875,17 @@ class ProductsController extends Controller
     $result['cart_count'] = 0;
     $result['response'] = 0;
     $oldqty = 0;
+    $cookie_id = Cookie::get('cart_set_id');
+
     //echo '<pre>';print_r($_POST);die;
-    if(Auth::check()){
+    /*if(Auth::check()){*/
       if ($request->isMethod('post')) {
 
         
         $qty = isset($request->quantity)?$request->quantity:1;
         $products = Product::where('status','=', 1)->where('id','=', $request->product_id)->first();
-       //echo '<pre>';print_r($products);die;
-        //$cart_list = Cart::where('product_id','=',$request->productid)->first();
+       
         $cart_list = array();
-
-        /*if (!empty($cart_list)) {
-          $set_id = Cart::find($cart_list->id);
-          $oldqty = $cart_list->qty;
-        }*/
 
         if (Session::has('shoppingstep')) {
           Session::forget('shoppingstep');
@@ -856,7 +894,15 @@ class ProductsController extends Controller
         if(!empty($products)){
          //echo '<pre>';print_r($_POST);die;
             $cart = Cart::find($request->cart_id);
-            $cart->user_id = Auth::user()->id;
+            if(Auth::check()){
+              $cart->user_id = Auth::user()->id;
+              $cart->cart_set_id = $cookie_id;
+            }else{
+                            
+              $cart->cart_set_id = $cookie_id;
+
+            }
+            
             $cart->product_id = $request->product_id;
             $cart->qty = $qty+$oldqty; 
 
@@ -867,7 +913,12 @@ class ProductsController extends Controller
             
             $cart->save();
 
-            $cart_count = Cart::where('user_id','=', Auth::user()->id)->count();
+            if(Auth::check()){
+              $cart_count = Cart::where('user_id','=', Auth::user()->id)->count();
+            }else{
+              $cart_count = Cart::where('cart_set_id','=', $cookie_id)->count();
+
+            }
             $result['cart_count'] = $cart_count;
             $result['response'] = 1;
 
@@ -877,9 +928,9 @@ class ProductsController extends Controller
             Session::put('cart_count', $cart_count);
         }        
       }
-    }else{
+    /*}else{
 
-    }
+    }*/
     return response()->json($result);
   }
 
@@ -1008,7 +1059,17 @@ class ProductsController extends Controller
         if($cart->delete()){
             $result['response'] = 1;
         }
-        $cart_count = Cart::with('product')->where('user_id','=', Auth::user()->id)->count();        
+
+
+            if(Auth::check()){
+              $cart_count = Cart::with('product')->where('user_id','=', Auth::user()->id)->count();
+              
+            }else{
+              $cart_count = Cart::with('product')->where('cart_set_id','=', Cookie::get('cart_set_id'))->count();
+
+              //$cart_count = Cart::where('cart_set_id','=', $cookie_id)->count();
+
+            }
         $result['cart_count'] = $cart_count;
 
         if (Session::has('cart_count')) {
@@ -1028,6 +1089,8 @@ class ProductsController extends Controller
  */
   public function cart_detail()
   {
+   // print_r(Session::getId());die;
+
     $current_date = date('Y-m-d');
     $conditions = array(Auth::user()->group_id => Auth::user()->group_id,0 => 0);
 

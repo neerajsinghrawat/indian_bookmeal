@@ -15,18 +15,18 @@
                     <!-- Navigation -->
                     <nav class="module module-navigation left mr-4">
                         <ul id="nav-main" class="nav nav-main">
-                            <li class="lidesign"><a href="{{ url('/') }}">Home</a></li>
-                            <li class="lidesign"><a href="{{ url('/about-us') }}">About</a></li>
-                            <li class="lidesign"><a href="{{ URL::to('category/menu') }}">Menu</a></li>
+                            <li class=""><a href="{{ url('/') }}">Home</a></li>
+                            <li class=""><a href="{{ url('/about-us') }}">About</a></li>
+                            <li class=""><a href="{{ URL::to('category/menu') }}">Menu</a></li>
                             
-                            <li class="lidesign"><a href="{{ url('/contact-us') }}">Contact</a></li>
+                            <li class=""><a href="{{ url('/contact-us') }}">Contact</a></li>
                         @if (Auth::guest())
-                            <li class="lidesign"><a href="{{ route('login') }}">Login</a></li>
+                            <li class=""><a href="{{ route('login') }}">Login</a></li>
                             <li class="lidesign"><a href="{{ route('register') }}">Register</a></li>
                         @else
                             <li class="has-dropdown lidesign">
                                 <a href="#">My Account</a>
-                                <div class="dropdown-container">
+                                <div class="dropdown-container setTpo">
                                     <ul class="dropdown-mega">
                                         <li><a href="<?php echo URL::to('/').'/dashboard'; ?>">Dashboard</a></li>
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout ({{ Auth::user()->username }})</a>
@@ -39,6 +39,7 @@
                     </nav>
                     <div class="module left">
                         <a href="#odder" data-toggle="modal" class="btn btn-outline-secondary"><span>Book A Table</span></a>
+                        <a href="#postCode-modal" data-toggle="modal" class="btn btn-outline-secondary"><span>Post Code</span></a>
                     </div>
                 </div>
                 <div class="col-md-2">

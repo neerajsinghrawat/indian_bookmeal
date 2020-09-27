@@ -98,6 +98,8 @@ class SettingsController extends Controller
              $setting->total_men = !empty($request->total_men) ? $request->total_men : 0;
              $setting->men_in_table = !empty($request->men_in_table) ? $request->men_in_table : 0;
              $setting->table_reservation_phone_number = $request->table_reservation_phone_number;
+             $setting->is_takeaway = ($request->is_takeaway == 'on')?1:0;
+             $setting->is_delivery = ($request->is_delivery == 'on')?1:0;
 
         if (!empty($request->file('logo'))) {
         $image = $request->file('logo');

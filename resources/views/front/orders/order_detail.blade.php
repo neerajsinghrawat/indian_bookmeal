@@ -9,7 +9,7 @@
     <div class="bg-image bg-parallax"><img src="{{asset('css/front/img/bg-desk.jpg')}}" alt=""></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 offset-lg-4">
+            <div class="col-lg-8 offset-lg-2 text-center">
                 <h1 class="mb-0">Order</h1>
                 <h4 class="text-muted mb-0">Some informations about our restaurant</h4>
             </div>
@@ -69,7 +69,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading  bg-dark dark p-4">
-                        <h3 class="panel-title"><strong>Order summary</strong><span class="btn btn-primary float-right" style="cursor: default;">{{($orderDetail->payment_mode == 'cod')?'Cash on delivery':'Paid'}}</span></h3>
+                        <h3 class="panel-title"><strong>Order summary</strong><span class="orderSt">{{($orderDetail->payment_mode == 'cod')?'Cash on delivery':'Paid'}}</span>&nbsp;<span class="orderSt"> {{($orderDetail->take_order == 'takeaway')?'Take-Away':'Home-Delivery'}}</span></h3>
                         
                     </div>
                     <div class="panel-body ">
@@ -99,7 +99,9 @@
                                                 $iImgPath = asset('image/product/200x200/'.$order_item->image);
                                               }
 
-                                            $attributes = getAttributeDetail($order_item->productFeatureItem_id) ; 
+                                           // $attributes = getAttributeDetail($order_item->productFeatureItem_id) ; 
+
+                                            $attributes = getOrderAttributeDetail($order_item->id) ; 
 
                                             //echo '<pre>';print_r($order_item);die;
                                     ?>
@@ -154,7 +156,7 @@
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line text-center"><strong>Tax</strong></td>
-                                        <td class="thick-line text-right"><?php echo getSiteCurrencyType(); ?><?php echo $orderDetail->tax_amount ?></td>
+                                        <td class="thick-line text-right"><?php echo getSiteCurrencyType(); ?><?php echo number_format($orderDetail->tax_amount, 2);  ?></td>
                                     </tr>                                
 
                                     <tr>
@@ -163,7 +165,7 @@
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line text-center"><strong>Shipping Charges</strong></td>
-                                        <td class="thick-line text-right"><?php echo getSiteCurrencyType(); ?><?php echo $orderDetail->shippingamount ?></td>
+                                        <td class="thick-line text-right"><?php echo getSiteCurrencyType(); ?><?php echo (!empty($orderDetail->shippingamount))?$orderDetail->shippingamount:0; ?></td>
                                     </tr>                               
 
 
@@ -184,17 +186,20 @@
             </div>
         </div>
         
-        <div class="row">
-            <div class="col-md-12">
-            <h3 class="panel-title bg-dark dark p-4"><strong>Track Order:</strong></h3><hr>
-                <ol class="progtrckr" data-progtrckr-steps="4">
-                    <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['confirmed']) ? 'done' : 'todo'; ?>">Order Confirmed <?php echo isset($orderDeliveryStatusArr['confirmed']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['confirmed']->updated_at)).')' : '';  ?></li>
-                    <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['assign_staff']) ? 'done' : 'todo'; ?>">Food Pack & Assign <?php echo isset($orderDeliveryStatusArr['assign_staff']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['assign_staff']->updated_at)).')' : '';  ?></li>
-                    <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? 'done' : 'todo'; ?>">Out For Delivery <?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['out_for_delivery']->updated_at)).')' : '';  ?></li>
-                    <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['delivered']) ? 'done' : 'todo'; ?>">Delivered <?php echo isset($orderDeliveryStatusArr['delivered']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['delivered']->updated_at)).')' : '';  ?></li>
-                </ol>
+        <?php if($orderDetail->take_order == 'takeaway'){ ?>
+        <?php }else{?>
+            <div class="row">
+                <div class="col-md-12">
+                <h3 class="panel-title bg-dark dark p-4"><strong>Track Order:</strong></h3><hr>
+                    <ol class="progtrckr" data-progtrckr-steps="4">
+                        <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['confirmed']) ? 'done' : 'todo'; ?>">Order Confirmed <?php echo isset($orderDeliveryStatusArr['confirmed']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['confirmed']->updated_at)).')' : '';  ?></li>
+                        <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['assign_staff']) ? 'done' : 'todo'; ?>">Food Pack & Assign <?php echo isset($orderDeliveryStatusArr['assign_staff']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['assign_staff']->updated_at)).')' : '';  ?></li>
+                        <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? 'done' : 'todo'; ?>">Out For Delivery <?php echo isset($orderDeliveryStatusArr['out_for_delivery']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['out_for_delivery']->updated_at)).')' : '';  ?></li>
+                        <li class="progtrckr-<?php echo isset($orderDeliveryStatusArr['delivered']) ? 'done' : 'todo'; ?>">Delivered <?php echo isset($orderDeliveryStatusArr['delivered']) ? '('.date('h:i A', strtotime($orderDeliveryStatusArr['delivered']->updated_at)).')' : '';  ?></li>
+                    </ol>
+                </div>
             </div>
-        </div>
+        <?php } ?>
     
 						
 	<div class="clearfix"></div>

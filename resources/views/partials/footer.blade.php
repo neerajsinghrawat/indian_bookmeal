@@ -60,7 +60,7 @@
         </div>
         <!-- Footer 2nd Row -->
         <div class="footer-second-row">
-            <span class="text-muted">Copyright {{ $setting->site_title}} {{date('Y')}}©.</span>
+            <span class="text-muted">copyright © {{date('Y')}} {{ $setting->site_title}} All Rights Reserved</span>
         </div>
     </div>
 

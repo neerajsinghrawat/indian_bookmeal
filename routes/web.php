@@ -52,17 +52,21 @@ Route::group(['middleware' => ['web']], function() {
 
 //Cart routes
     Route::post('/products/add_to_cart', 'Front\ProductsController@add_to_cart')->middleware('auth');
-    Route::post('/products/product_detail', 'Front\ProductsController@product_detail')->middleware('auth');
-    Route::post('/products/product_cart_detail', 'Front\ProductsController@product_cart_detail')->middleware('auth');
+    Route::post('/products/product_detail', 'Front\ProductsController@product_detail');
+    Route::post('/products/product_cart_detail', 'Front\ProductsController@product_cart_detail');
     Route::post('/products/product_front_cartdetail', 'Front\ProductsController@product_front_cartdetail');
-    Route::post('/products/add_to_cart_new', 'Front\ProductsController@add_to_cart_new')->middleware('auth');
-    Route::post('/products/update_to_cart_new', 'Front\ProductsController@update_to_cart_new')->middleware('auth');
+    Route::post('/products/add_to_cart_new', 'Front\ProductsController@add_to_cart_new');
+    Route::post('/users/add_address_new', 'Front\UsersController@add_address_new')->middleware('auth');
+    Route::post('/products/update_to_cart_new', 'Front\ProductsController@update_to_cart_new');
     Route::post('/products/update-cart', 'Front\ProductsController@update_cart')->middleware('auth');
 
     Route::post('/products/cart-step',  ['as' => 'products.cart-step.post',   'uses' => 'Front\ProductsController@shopping_cart_step'])->middleware('auth');
 
     Route::get('/shopping-cart', 'Front\ProductsController@cart_detail')->middleware('auth');
-    Route::post('/delete-cart', 'Front\ProductsController@delete_cart')->middleware('auth');
+    Route::post('/delete-cart', 'Front\ProductsController@delete_cart');
+
+
+    Route::post('/add_timedropdown', 'Front\PagesController@add_timedropdown');
     
 
     
@@ -72,7 +76,7 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::get('payments/pay', 'Front\PaymentsController@pay')->middleware('auth');
     Route::get('/payments/success', 'Front\PaymentsController@getPaymentStatus')->middleware('auth');
-    Route::post('/payments/paypal',  ['as' => 'payments.paypal.post',   'uses' => 'Front\PaymentsController@paypal']);
+    Route::post('/payments/pay',  ['as' => 'payments.pay.post',   'uses' => 'Front\PaymentsController@paypal']);
     Route::get('/payments/cancel', 'Front\PaymentsController@cancel')->middleware('auth');
 	
 	Route::get('/cart-thankyou', 'Front\PaymentsController@thankyou_cart')->middleware('auth');
@@ -117,6 +121,7 @@ Route::group(['middleware' => ['web']], function() {
 
 
     Route::post('/pages/save_table_reservation/', 'Front\PagesController@save_table_reservation');
+    Route::post('/pages/check_postalcode/', 'Front\PagesController@check_postalcode');
 
 
 

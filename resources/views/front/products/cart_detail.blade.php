@@ -2,6 +2,8 @@
 @section('title', 'Cart')
 @section('description', 'Cart')
 @section('keywords', 'food','Cart')
+ <?php $model = new App\Models\Setting;
+       $setting = get_data($model); ?>
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />   
 
@@ -14,7 +16,7 @@
             <div class="bg-image bg-parallax"><img src="{{asset('css/front/img/bg-croissant.jpg')}}" alt=""></div>
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 offset-lg-4">
+                    <div class="col-lg-8 offset-lg-2 text-center">
                         <h1 class="mb-0">Checkout</h1>
                         <h4 class="text-muted mb-0">Some informations about our restaurant</h4>
                     </div>
@@ -30,7 +32,7 @@
                     <div class="col-xl-4 col-lg-5">
                         <div class="panel-cart-content cart-details shadow bg-white stick-to-content mb-4">
                             <div class="bg-dark dark p-4"><h5 class="mb-0">You order</h5> </div>
-                             <form action="{{ route('payments.paypal.post') }}" class="form-horizontal" method="post" id="paypalForm" enctype="multipart/form-data">
+                             <form action="{{ route('payments.pay.post') }}" class="form-horizontal" method="post" id="paypalForm" enctype="multipart/form-data">
                             {{ csrf_field() }}   
                             <table class="table-cart">
                                 <?php $total = 0;
@@ -51,7 +53,7 @@
                                     </td>
                                     <td class="price">{{ getSiteCurrencyType().(($cartlistdetail->product->price+$attributes['amount'])  * $cartlistdetail->qty)  }}</td>
                                     <td class="actions">
-                                        <!-- <a href="#product-modal" data-toggle="modal" class="action-icon"><i class="ti ti-pencil"></i></a> -->
+                                        <!-- <a href="#product-modal" data-toggle="modal" class="action-icon"><i class="ti ti-pencil"></i></a> --><a href="#productcartDetail" data-toggle="modal" class="action-icon productcartDetail" product_id="{{ $cartlistdetail->product->id }}" cart_id="{{ $cartlistdetail->id }}"><i class="ti ti-pencil"></i></a>
                                        <span class="action-icon delete_cart delete_{{ $cartlistdetail->id }}" cart_id="{{ $cartlistdetail->id }}"><i class="ti ti-trash"></i></span>
                                     </td>
                                 </tr>
@@ -63,16 +65,16 @@
                                 <?php } ?>
                             </table>
                             <div class="cart-summarys" style="display: block;">
-                                <div class="row">
+                                <div class="row setcartPdding">
                                     <div class="col-7 text-right text-muted">Order total:</div>
                                     <div class="col-5"><strong><span class="grand_total">{{ getSiteCurrencyType().$total}}</span></strong></div>
                                 </div>
-                                <div class="row">
+                                <div class="row setcartPdding">
                                     <div class="col-7 text-right text-muted">Coupon discount:</div>
                                     <div class="col-5"><strong><span class="coupon_discount"><?php echo (!empty(Session::get('apply_coupon.amount')))?getSiteCurrencyType().Session::get('apply_coupon.amount'):getSiteCurrencyType().'0'; ?></span></strong></div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-7 text-right text-muted">Tax:</div>
+                                <div class="row setcartPdding">
+                                    <div class="col-7 text-right text-muted">Tax({{(!empty($shipping_taxes->tax_percent))?$shipping_taxes->tax_percent:'0'}}%):</div>
                                     <div class="col-5"><strong><span class="tax_total"><?php
 
                                                     $total_amount = $total;
@@ -83,13 +85,17 @@
                                                                   echo ''.getSiteCurrencyType().'0';
                                                                 }?></span></strong></div>
                                 </div>
-                                <div class="row">
+                                <div class="row setcartPdding">
                                     <div class="col-7 text-right text-muted">Devliery:</div>
-                                    <div class="col-5"><strong><span class="shipping_total"><?php  
+                                    <div class="col-5"><strong>{{getSiteCurrencyType()}}<span class="shipping_total"><?php  $newshipping_amount = 0;
                                                     if (!empty($shipping_taxes->shipping_amount) && $shipping_taxes->shipping_type == 'Paid' ) {
-                                                         $total_amount = $shipping_taxes->shipping_amount + $total_amount;       
+                                                         //$total_amount = $shipping_taxes->shipping_amount + $total_amount;
+                                                         $newshipping_amount = $shipping_taxes->shipping_amount;
 
-                                                         echo getSiteCurrencyType().$shipping_taxes->shipping_amount;
+                                                               
+
+                                                         //echo getSiteCurrencyType().$shipping_taxes->shipping_amount;
+                                                         echo '0';
                                                      }else{
                                                         echo 'Free';
                                                      } 
@@ -105,9 +111,9 @@
                                                     } ?></span></strong></div>
                                 </div>
                                 <hr class="hr-sm">
-                                <div class="row">
+                                <div class="row setApplycoupon">
                                     <div class="col-7 text-right text-muted"><i class="ti ti-ticket apply_coupon" data-toggle="modal" data-target="#apply_coupon_popup"><b>Apply Coupon</b></i>Total:</div>
-                                    <div class="col-5"><strong><span class="main_total"><?php echo getSiteCurrencyType().$total_amount; ?></span></strong></div>
+                                    <div class="col-5"><strong>{{getSiteCurrencyType()}}<span class="main_total"><?php echo $total_amount; ?></span></strong></div>
                                 </div>
                             </div>
                             <!-- <div class="cart-empty" style="display: none;">
@@ -138,37 +144,82 @@
                                     </div>
                                 </fieldset><br>
 
-                            <h4 class="border-bottom pb-4"><i class="ti ti-package mr-3 text-primary"></i>Delivery</h4>
-                                <div class="icon_class">
-                                    <?php if(isset($addressesArr['home']->title)){ ?>
-                                       <span class="deliveryAddress" type="home" address_id="<?php echo $addressesArr['home']->id;?>" title="<?php echo $addressesArr['home']->title;?>" style="cursor:pointer;"><i class="ti ti-home" style="cursor:pointer;font-size: 20px;color: #ddae71;"/></i><b><?php echo $addressesArr['home']->title;?></b>
-                                       </span> 
-                                    <?php } if(isset($addressesArr['office']->title)){?>
-                                        <span class="deliveryAddress" type="office" address_id="<?php echo $addressesArr['office']->id;?>"  title="<?php echo $addressesArr['office']->title;?>" style="cursor:pointer;"><i class="ti ti-world" style="cursor:pointer;font-size: 20px;color: #ddae71;"/></i><b><?php echo ucwords($addressesArr['office']->title);?></b></span>
-                                    <?php } 
-                                     if(isset($addressesArr['other']) && count($addressesArr['other']) > 0){
-                                        foreach ($addressesArr['other'] as $key => $addressesAr) {  ?>
-                                        <span class="deliveryAddress" type="other" address_id="<?php echo $addressesAr->id;?>"  title="<?php echo $addressesAr->title;?>"  style="cursor:pointer;"><i class="icofont icofont-location-pin" style="cursor:pointer;color: #e54c2a;font-size: 30px;"/></i><b>{{ ucwords($addressesAr->title) }}</b>
-                                        </span>
-                                    <?php } } ?>
-                                </div><br>                            
-                                <fieldset>  
-                                    <h6 class="selectedDeliveryAddress">Default</h6>
-                                    <div class="form-group">
-                                        <label>Address</label>
-                                        <textarea name="deliveryAddress[address]" placeholder="Address" id="delivery_address" class="form-control" >{{ Auth::user()->address }}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Post Code</label>
-                                        <input name="deliveryAddress[postcode]" placeholder="Post Code" id="delivery_code" class="form-control postalAutoComplete" type="text" value="{{ Auth::user()->postcode }}">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label>Phone</label>
-                                        <input name="deliveryAddress[phone]" placeholder="Post Code" id="delivery_phone" class="form-control" type="text" value="{{ Auth::user()->phone }}">
-                                    </div>
-                                    <input name="deliveryAddress[address_id]"  id="delivery_address_id" class="form-control" type="hidden" value="0">
-                                </fieldset><br>
+
+                            <?php 
+                                    $display_show ='display: none';
+                                    $disabled = "disabled=disabled";
+
+                                if($setting['is_takeaway'] == 1 && $setting['is_delivery'] == 0){
+
+                                    $display_show ='display: none';
+                                    $disabled = "disabled=disabled";
+
+                                }elseif($setting['is_takeaway'] == 0 && $setting['is_delivery'] == 1 && Session::has('postcode') && Session::get('postcode.code_status') == 1){
+
+                                    $display_show ='display: block';
+                                    $disabled = "";
+                                }elseif($setting['is_takeaway'] == 0 && $setting['is_delivery'] == 0){
+                                    $display_show ='display: none';
+                                    $disabled = "disabled=disabled";
+                                }
+                                     
+                             ?>   
+                            <h4 class="border-bottom pb-4"><i class="ti ti-wallet mr-3 text-primary"></i>Take</h4>
+                            <div class="row text-lg">
+                                <?php  if($setting['is_delivery'] == 1 && Session::has('postcode') && Session::get('postcode.code_status') == 1) { ?>
+                                <div class="col-md-4 col-sm-6 form-group">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="take_order" class="custom-control-input take_order" value="delivery" newshipping_amount="{{ $newshipping_amount }}" total_amount="{{$total_amount}}">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Delivery</span>
+                                    </label>
+                                </div>
+                                <?php } ?>
+                                <div class="col-md-4 col-sm-6 form-group">
+                                    <label class="custom-control custom-radio ">
+                                        <input type="radio" name="take_order" class="custom-control-input take_order" value="takeaway" checked="checked" newshipping_amount="{{ $newshipping_amount }}" total_amount="{{$total_amount}}">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Take-Away</span>
+                                    </label>
+                                </div>
+                            </div>  <br>                         
+
+                                <div class="address_delivery" style="<?php echo $display_show; ?>"> 
+                                    <h4 class="border-bottom pb-4"><i class="ti ti-package mr-3 text-primary"></i>Delivery</h4>
+                                    <div class="icon_class row">
+                                        <?php if(isset($addressesArr['home']->title)){ ?>
+                                           <span class="deliveryAddress col-md-3" type="home" address_id="<?php echo $addressesArr['home']->id;?>" title="<?php echo $addressesArr['home']->title;?>" style="cursor:pointer;"><i class="ti ti-home" style="cursor:pointer;font-size: 20px;color: #ddae71;"/></i> &nbsp;&nbsp;<b><?php echo $addressesArr['home']->title;?></b>
+                                           </span> 
+                                        <?php } if(isset($addressesArr['office']->title)){?>
+                                            <span class="deliveryAddress  col-md-3" type="office" address_id="<?php echo $addressesArr['office']->id;?>"  title="<?php echo $addressesArr['office']->title;?>" style="cursor:pointer;"><i class="ti ti-world" style="cursor:pointer;font-size: 20px;color: #ddae71;"/></i> &nbsp;&nbsp;<b><?php echo ucwords($addressesArr['office']->title);?></b></span>
+                                        <?php } 
+                                         if(isset($addressesArr['other']) && count($addressesArr['other']) > 0){
+                                            foreach ($addressesArr['other'] as $key => $addressesAr) {  ?>
+                                            <span class="deliveryAddress col-md-3" type="other" address_id="<?php echo $addressesAr->id;?>"  title="<?php echo $addressesAr->title;?>"  style="cursor:pointer;"><i class="icofont icofont-location-pin" style="cursor:pointer;color: #e54c2a;font-size: 30px;"/></i><b>{{ ucwords($addressesAr->title) }}</b>
+                                            </span>
+                                        <?php } } ?>
+                                    </div><br>             
+                                    <fieldset>
+                                        <a href="#addAddress" data-toggle="modal" class="btn btn-primary btn-sm" style="margin-bottom: 15px;"><i class="ti ti-plus"></i>  Add Address</a><br>               
+
+                                        <h6 class="selectedDeliveryAddress">Default</h6>
+                                        <div class="form-group">
+                                            <label>Address</label>
+                                            <textarea name="deliveryAddress[address]" placeholder="Address" id="delivery_address" class="form-control address_fields" <?php echo $disabled; ?>>{{ Auth::user()->address }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Post Code</label>
+                                            <input name="deliveryAddress[postcode]" placeholder="Post Code" id="delivery_code" class="form-control postalAutoComplete address_fields" type="text" value="{{ Auth::user()->postcode }}" <?php echo $disabled; ?> >
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>Phone</label>
+                                            <input name="deliveryAddress[phone]" placeholder="Post Code" id="delivery_phone" class="form-control address_fields" type="text" value="{{ Auth::user()->phone }}" <?php echo $disabled; ?>>
+                                        </div>
+                                        <input name="deliveryAddress[address_id]"  id="delivery_address_id" class="form-control address_fields" type="hidden" value="0" <?php echo $disabled; ?>>
+                                    </fieldset><br>  
+                                </div>
+
 
                             <h4 class="border-bottom pb-4"><i class="ti ti-wallet mr-3 text-primary"></i>Payment</h4>
                             <div class="row text-lg">
@@ -184,7 +235,7 @@
                                 <?php } if($payment_getway['cod'] == 1) { ?>
                                 <div class="col-md-4 col-sm-6 form-group">
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="payment_type" class="custom-control-input newPayment" value="Cod">
+                                        <input type="radio" name="payment_type" class="custom-control-input newPayment" value="Cod" checked="checked">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Cash</span>
                                     </label>
@@ -250,7 +301,7 @@
       <div class="modal-content coupon_popup_size">
         <div class="modal-header">
           <button type="button" class="close float-right" data-dismiss="modal">&times;</button>
-      <!--     <h4 class="modal-title float-left">Apply Coupon</h4> -->
+          <h6 class="modal-title float-left">Apply Coupon</h6>
         </div>
         <div class="modal-body">
 
@@ -280,6 +331,57 @@
           </table>                    
         </div>                 
       </div>
+    </div>
+</div>
+
+
+<div class="modal fade product-modal" id="addAddress" role="dialog">
+    <div class="modal-dialog odder" role="document" style="margin-top: 100px;">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10  modal-content" style="padding-left: 0px; padding-right: 0px;">
+                        
+                        <!-- Book a Table -->
+                        <div class="utility-box">
+                            
+                            <div class="col-sm-12">
+
+                               
+                                <form action="" id="submitAddressFrom" class="booking-form">
+                                    {{ csrf_field() }}
+                                    <div class="utility-box-content"><div id="dispmsg" style="color: red"><b></b></div><div id="dispmsgSuccess" style="color: green"><b></b></div>
+
+                                    <button type="button" class="close newAddressClose" data-dismiss="modal" aria-label="Close"><i class="ti ti-close"></i></button>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <input name="title" placeholder="Title" id="title" class="form-control removeLater required_3" type="text" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <textarea name="address" placeholder="Address" id="delivery_address" class="form-control removeLater required_3" ></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Post Code</label>
+                                        <input name="postcode" placeholder="Post Code" id="delivery_code" class="form-control removeLater required_3" type="text" value="">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input name="phone" placeholder="Phone" id="delivery_phone" class="form-control removeLater required_3" type="text" value=""><input type="hidden" name="type" value="other">
+                                    </div>
+                                        <br>
+                                        <button class="utility-box-btn btn btn-secondary btn-block btn-lg saveaddressButton" type="button">Save</button>
+                                    </div>
+
+                               
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 
@@ -315,7 +417,45 @@ $(window).load(function(){
          $(".stripe").hide(); 
          $(".feature_value_").prop('disabled', 'disabled');        
       }
-  });
+  });    
+
+
+    $('.take_order').click(function(){
+        //alert('kjhn');
+        var valNew =$(this).val();
+        //alert(valNew);
+    
+      if($(this).prop('checked')){
+
+        if (valNew == 'delivery') {
+           var newshipping_amount=$(this).attr('newshipping_amount');
+           var total_amount=$(this).attr('total_amount');
+
+           var alltotal = parseFloat(total_amount)+parseFloat(newshipping_amount);
+
+           $('.main_total').html(alltotal);
+           $('.shipping_total').html(newshipping_amount);
+           //alert(newshipping_amount);
+          $(".address_delivery").show();         
+          $(".address_fields").prop('disabled', false);                
+        }else{
+           var newshipping_amount=parseFloat(0);
+           var total_amount=$(this).attr('total_amount');
+
+           var alltotal = parseFloat(total_amount)+parseFloat(newshipping_amount);
+
+           $('.main_total').html(alltotal);
+           $('.shipping_total').html(newshipping_amount);
+             $(".address_delivery").hide(); 
+             $(".address_fields").prop('disabled', 'disabled');
+
+        }
+         
+      }else{
+            $(".address_delivery").hide(); 
+             $(".address_fields").prop('disabled', 'disabled');        
+      }
+    });
 
   var baseUrl = '{{ URL::to('/') }}';
       
@@ -360,8 +500,66 @@ $(document).ready(function() {
   var baseUrl = '{{ URL::to('/') }}';
       
   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
- // var form = $( "#addToCartForm" ).serialize();
+        // var form = $( "#addToCartForm" ).serialize();
+  $(document).on('click','.saveaddressButton',function(){
+   
+        var baseUrl = '{{ URL::to('/') }}';
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    var title= $('#title').val();
+    var delivery_address= $('#delivery_address').val();
+    var delivery_code= $('#delivery_code').val();
+    var delivery_phone= $('#delivery_phone').val();
+    if (title !='' && delivery_address !='' && delivery_code !='' && delivery_phone !='') {
 
+          $.ajax({
+            url : baseUrl+'/users/add_address_new',
+            type : 'POST',
+            data : $('#submitAddressFrom').serialize(),
+            dataType : 'json',
+            success : function(resultData){
+              
+                    if(resultData.result == 1){
+                       $('.selectedDeliveryAddress').html(resultData.delivery_title);
+                        $('#delivery_address').val(resultData.delivery_address);
+                        $('#delivery_code').val(resultData.delivery_postcode);
+                        $('#delivery_phone').val(resultData.delivery_phone);
+                        $('#delivery_address_id').val(resultData.delivery_address_id);
+                    }
+                    //$("#addAddress").hide();
+                    $(".newAddressClose").trigger('click');
+                    $(".removeLater").val('');
+                    
+            }
+          });    
+    }else{
+
+        $('#dispmsg').html('Please fill all required fields').show();
+        $(".required_3").each(function() {
+
+            var dataFill = $(this).val();
+
+            if (dataFill == '') {
+
+                //alert(dataFill);
+                $(this).css({'border-color':'red'});
+                
+            }else{
+
+                $(this).css({'border-color':'#e0e0e0'});
+
+
+            }
+
+
+
+        });
+
+        
+
+        setTimeout(function(){ jQuery("#dispmsg").hide(); }, 3000);
+    }
+  
+  });
   $('.button_change').click(function(){
          // alert('jkjbj');
         var qty = $(this).attr('qty'); 

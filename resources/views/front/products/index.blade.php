@@ -9,7 +9,7 @@
         <div class="page-title bg-light">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 offset-lg-4">
+                    <div class="col-lg-8 offset-lg-2 text-center">
                         <h1 class="mb-0">Menu List</h1>
                         <h4 class="text-muted mb-0">Some informations about our restaurant</h4>
                     </div>
@@ -29,9 +29,14 @@
                               <?php $i = 1;
                                 if (!empty($categories)) {
                                   //echo '<pre>';print_r($categories);die;
-                                  foreach ($categories as $key => $category) { ?>
+                                  foreach ($categories as $key => $category) {
+                                    $is_show_cat = getCategoryProductCount($category['id']);
+
+                                    if ($is_show_cat > 0) {
+                                     
+                                     ?>
                                 <li><a href="{{ URL::to('category/menu') }}#<?php echo $category['slug']; ?>"><?php echo $category['name']; ?></a></li>
-                                <?php } } ?>
+                                <?php } } } ?>
                             </ul>
                         </nav>
                     </div>
@@ -43,7 +48,7 @@
                           //echo '<pre>';print_r($keyarr);die; ?>
                         <div id="{{ (isset($keyarr[2]))?$keyarr[2]:'' }}" class="menu-category">
                             <div class="menu-category-title">
-                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/830x170/'.$keyarr[1]):'none';  ?>" alt="category"></div>
+                                <div class="bg-image"><img src="<?php echo(isset($keyarr[1]))?asset('image/category/'.$keyarr[1]):'none';  ?>" alt="category"></div>
                                 <h2 class="title categoryTitle">{{ (isset($keyarr[0]))?strtolower($keyarr[0]):'' }}</h2>
                             </div>
                             <div class="menu-category-content">
@@ -81,12 +86,9 @@
                                           </div>
                                         <div class="col-sm-3 text-sm-right">
                                             
-                                            <!-- <button class="btn btn-outline-secondary btn-sm addToCart" product_id="{{ $food['id'] }}"><span>Add to cart</span></button> -->
-                                            @if (Auth::guest())
-                                            <a href="{{ route('login') }}" class="btn btn-outline-secondary"><span>Add to cart</span></a>
-                                            @else
+                                            
                                             <a href="#productModal" data-toggle="modal" class="btn btn-outline-secondary productDetail" product_id="{{$food['id']}}"><span>Add to cart</span></a>
-                                            @endif
+                                            
                                         </div>
                                     </div>
                                 </div>

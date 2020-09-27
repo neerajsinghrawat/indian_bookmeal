@@ -23,8 +23,11 @@ use App\Models\ShippingTax;
 use App\Models\Couponcode;
 use App\Models\ProductAttribute;
 
+use Session;
 use View;
 use Auth;
+
+use Illuminate\Support\Facades\Cookie;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -33,12 +36,35 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
+    {   
+        if(Cookie::get('cart_set_id') !== null){
+            //echo Cookie::get('cart_set_id');die;
+        }else{
+            $str=rand();
+            $secret_key = sha1($str);
+            Cookie::queue('cart_set_id', $secret_key, 10080); 
+        }
 
-        
+
 
         View::composer('partials.header', function($view)
             {
+
+        if (Auth::check()) {
+                //echo '<pre>';print_r(Cookie::get('cart_set_id'));die;
+            
+            $cookiescart_list = Cart::where('user_id','=', null)->where('cart_set_id','=', Cookie::get('cart_set_id'))->get();
+            if (!empty($cookiescart_list[0])) {
+                foreach($cookiescart_list as $cookiescart){
+
+                    $cart = Cart::find($cookiescart->id);
+                    $cart->user_id = Auth::user()->id;
+                    $cart->save();
+
+                }
+            }
+            //echo '<pre>out';print_r($cookiescart_list);die;
+        }
                 $category_list = Category::with('children')->where('parent_id','=',0)->where('status','=', 1)->get();
                 
                 $cart_count = Cart::where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
@@ -53,15 +79,25 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('partials.header', function($view)
             {
-                
-                $cart_count = Cart::where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->count();
+                if (Auth::check()) {
+                    $cart_count = Cart::where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->count();                    
+                }else{
+
+                    $cart_count = Cart::where('cart_set_id','=', Cookie::get('cart_set_id'))->count();
+
+                }
                 $view->with('cart_count', $cart_count);
             });
 
         View::composer('partials.header', function($view)
             {
+                //echo Cookie::get('cart_set_id');die;
               $total = 0;
-                $cart_list = Cart::with('product')->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
+                if (Auth::check()) {
+                    $cart_list = Cart::with('product')->where('user_id','=', ((Auth::check())?Auth::user()->id:'1'))->get();
+                }else{
+                    $cart_list = Cart::with('product')->where('cart_set_id','=', Cookie::get('cart_set_id'))->get();
+                }
                 
                 $couponn = array();
                 foreach ($cart_list as $key1 => $cart_value) {
@@ -136,7 +172,6 @@ class AppServiceProvider extends ServiceProvider
             
             
         
-		
 
 
         $activeComplaints = OrderComplaint::select('order_number')->where('status','=',0)->where('user_type','=','customer')->distinct('order_number')->orderBy('created_at','desc')->get();
