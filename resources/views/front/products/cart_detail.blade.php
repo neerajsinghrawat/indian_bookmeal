@@ -246,7 +246,7 @@
                         <div class='form-row row'>
                             <div class='col-md-12 form-group required'>
                                 <label class='control-label'>Name on Card</label> 
-                                <input name="stripe[name]" class='form-control feature_value_' type='text' required="required">
+                                <input name="stripe[name]" class='form-control feature_value_' type='text' required="required" disabled="disabled">
                             </div>
                         </div>
   
@@ -254,7 +254,7 @@
                             <div class='col-md-12 form-group card required'>
                                 <label class='control-label'>Card Number</label> <input
                                     autocomplete='off' class='form-control card-number feature_value_' size='20'
-                                    type='text' name="stripe[card_number]" required="required">
+                                    type='text' name="stripe[card_number]" required="required" disabled="disabled">
                             </div>
                         </div>
   
@@ -262,17 +262,17 @@
                             <div class='col-xs-12 col-md-4 form-group cvc required'>
                                 <label class='control-label'>CVC</label> <input autocomplete='off'
                                     class='form-control card-cvc feature_value_' placeholder='ex. 311' size='4'
-                                    type='text' name="stripe[cvv]" required="required">
+                                    type='text' name="stripe[cvv]" required="required" disabled="disabled">
                             </div>
                             <div class='col-xs-12 col-md-4 form-group expiration required'>
                                 <label class='control-label'>Expiration Month</label> <input
                                     class='form-control card-expiry-month feature_value_' placeholder='MM' size='2'
-                                    type='number' name="stripe[expire_month]" required="required">
+                                    type='number' name="stripe[expire_month]" required="required" disabled="disabled">
                             </div>
                             <div class='col-xs-12 col-md-4 form-group expiration required'>
                                 <label class='control-label'>Expiration Year</label> <input
                                     class='form-control card-expiry-year feature_value_' placeholder='YYYY' size='4'
-                                    type='number' name="stripe[expire_year]" required="required"> 
+                                    type='number' name="stripe[expire_year]" required="required" disabled="disabled"> 
                             </div>
                                 </fieldset>
                         </div>
